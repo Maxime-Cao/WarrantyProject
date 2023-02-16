@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">WarrantyProject</string>
+    <!-- Main Activity -->
+    <string name="main_activity_title">Saved Warranty</string>
+    <string name="main_activity_no_such_file">No such file</string>
+    <!-- *Card Fragment* -->
+    <string name="card_title">Title</string>
+    <string name="card_summary">Summary</string>
+    <string name="card_store">Store</string>
+
+    <!-- Add Activity -->
+    <string name="add_activity_title">Add Warranty</string>
+    <!-- *Hint* -->
+    <string name="add_activity_label_product_name">Product name</string>
+    <string name="add_activity_label_price">Price</string>
+    <string name="add_activity_label_shop">Shop</string>
+    <string name="add_activity_label_summary">Summary</string>
+    <string name="add_activity_label_date_of_purchase">Date of purchase</string>
+    <string name="add_activity_label_max_garantee_date">Max. guarantee date</string>
+    <string name="add_activity_label_notification">Notification (default: 1month)</string>
+    <string name="add_activity_label_receive_notification">Receive notification?</string>
+    <string name="add_activity_label_warranty_image">Warranty image</string>
 </resources>
