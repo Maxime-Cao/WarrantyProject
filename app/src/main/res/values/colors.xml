@@ -4,4 +4,5 @@
     <color name="primary_color">#E9E8CB</color>
     <color name="secondary_color">#F1EFE3</color>
     <color name="text_color">#000000</color>
+    <color name="icon_color">#000000</color>
 </resources>

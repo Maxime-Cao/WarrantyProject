@@ -11,13 +11,17 @@
     <!-- Add Activity -->
     <string name="add_activity_title">Add Warranty</string>
     <!-- *Hint* -->
-    <string name="add_activity_label_product_name">Product name</string>
-    <string name="add_activity_label_price">Price</string>
-    <string name="add_activity_label_shop">Shop</string>
-    <string name="add_activity_label_summary">Summary</string>
-    <string name="add_activity_label_date_of_purchase">Date of purchase</string>
-    <string name="add_activity_label_max_garantee_date">Max. guarantee date</string>
-    <string name="add_activity_label_notification">Notification (default: 1month)</string>
-    <string name="add_activity_label_receive_notification">Receive notification?</string>
-    <string name="add_activity_label_warranty_image">Warranty image</string>
+    <string name="add_activity_hint_product_image">Product image</string>
+    <string name="add_activity_hint_product_name">Product name</string>
+    <string name="add_activity_hint_price">Price</string>
+    <string name="add_activity_hint_shop">Shop</string>
+    <string name="add_activity_hint_summary">Summary</string>
+    <string name="add_activity_hint_date_of_purchase">Date of purchase</string>
+    <string name="add_activity_hint_max_guarantee_date">Max. guarantee date</string>
+    <string name="add_activity_hint_notification">Notification (default: 1month)</string>
+    <string name="add_activity_hint_receive_notification">Receive notification?</string>
+    <string name="add_activity_hint_warranty_image">Warranty image</string>
+
+    <!-- Look Activity -->
+    <string name="look_activity_title">Warranty</string>
 </resources>
