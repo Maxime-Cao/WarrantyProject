@@ -40,7 +40,8 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="28dp"
         android:layout_marginTop="12dp"
-        android:background="@android:color/black"
+        android:backgroundTint="@color/image_button_color"
+        android:textColor="@color/image_button_color"
         app:layout_constrainedRadius="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/add_warranty" />
@@ -70,6 +71,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
+            android:background="@color/secondary_color"
             android:layout_height="39dp"
             android:hint="@string/add_activity_hint_product_name" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -85,6 +87,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
+            android:background="@color/secondary_color"
             android:layout_height="39dp"
             android:hint="@string/add_activity_hint_price" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -100,6 +103,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
+            android:background="@color/secondary_color"
             android:layout_height="39dp"
             android:hint="@string/add_activity_hint_shop" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -116,6 +120,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/secondary_color"
             android:hint="@string/add_activity_hint_summary" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -130,6 +135,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/secondary_color"
             android:drawableEnd="@drawable/calendar_comp"
             android:hint="@string/add_activity_hint_date_of_purchase" />
 
@@ -148,11 +154,25 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/secondary_color"
             android:drawableEnd="@drawable/calendar_comp"
             android:hint="@string/add_activity_hint_max_guarantee_date" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <TextView
+        android:id="@+id/slider_notification"
+        android:layout_width="71dp"
+        android:layout_height="12dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:gravity="top"
+        android:text="@string/add_activity_hint_notification"
+        android:textColor="@android:color/black"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toTopOf="@+id/notification_time"
+        tools:ignore="SmallSp"
+        tools:layout_editor_absoluteX="30dp" />
     <Spinner
         android:id="@+id/notification_time"
         android:layout_width="170dp"
@@ -161,21 +181,51 @@
         app:layout_constraintTop_toBottomOf="@+id/product_date_of_purchase"
         tools:layout_editor_absoluteX="30dp" />
 
+    <TextView
+        android:id="@+id/boolean_notification"
+        android:layout_width="103dp"
+        android:layout_height="12dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:gravity="top"
+        android:text="@string/add_activity_hint_receive_notification"
+        android:textColor="@android:color/black"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toTopOf="@+id/notification_boolean"
+        tools:ignore="SmallSp"
+        tools:layout_editor_absoluteX="220dp" />
+
     <Switch
         android:id="@+id/notification_boolean"
-        android:layout_width="94dp"
-        android:layout_height="36dp"
+        android:layout_width="49dp"
+        android:layout_height="35dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="12dp"
         app:layout_constraintStart_toEndOf="@+id/notification_time"
         app:layout_constraintTop_toBottomOf="@+id/product_max_guarantee_date"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-    <Button
+    <TextView
         android:id="@+id/warranty_image"
+        android:layout_width="71dp"
+        android:layout_height="12dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:gravity="top"
+        android:text="@string/add_activity_hint_warranty_image"
+        android:textColor="@android:color/black"
+        android:textSize="10sp"
+
+        app:layout_constraintBottom_toTopOf="@+id/warranty_button"
+        tools:ignore="SmallSp"
+        tools:layout_editor_absoluteX="30dp" />
+
+    <Button
+        android:id="@+id/warranty_button"
         android:layout_width="362dp"
         android:layout_height="171dp"
         android:layout_marginTop="12dp"
+        android:backgroundTint="@color/image_button_color"
         app:layout_constraintTop_toBottomOf="@+id/notification_time"
         tools:layout_editor_absoluteX="30dp" />
 
