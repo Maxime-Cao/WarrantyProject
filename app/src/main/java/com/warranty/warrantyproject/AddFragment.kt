@@ -37,14 +37,11 @@ class AddFragment : Fragment() {
         val dateOfPurchaseInputLayout = binding.productDateOfPurchase
         val dateOfPurchaseEditText = binding.productDateOfPurchaseEditText
 
-        // Attacher un sélecteur de date à dateOfPurchaseInputLayout et dateOfPurchaseEditText
         attachDatePickerToTextInput(dateOfPurchaseInputLayout, dateOfPurchaseEditText, requireContext())
 
-        // Trouver les TextInputLayout et TextInputEditText pour la date de garantie maximale
         val maxGuaranteeDateInputLayout = binding.productMaxGuaranteeDate
         val maxGuaranteeDateEditText = binding.productMaxGuaranteeDateEditText
 
-        // Attacher un sélecteur de date à maxGuaranteeDateInputLayout et maxGuaranteeDateEditText
         attachDatePickerToTextInput(maxGuaranteeDateInputLayout, maxGuaranteeDateEditText, requireContext())
 
         return binding.root
