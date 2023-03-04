@@ -11,8 +11,8 @@
         android:id="@+id/add_warranty"
         android:layout_width="230dp"
         android:layout_height="45dp"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="10dp"
         android:gravity="top"
         android:text="@string/add_activity_title"
         android:textAppearance="@style/saved_warranty"
@@ -26,8 +26,8 @@
         android:layout_height="24dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/arrowback_comp"
         android:gravity="top"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,14 +35,15 @@
 
     <Button
         android:id="@+id/button_add_image"
-        android:layout_width="159dp"
-        android:layout_height="159dp"
+        android:layout_width="175dp"
+        android:layout_height="189dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="28dp"
         android:layout_marginTop="12dp"
         android:backgroundTint="@color/image_button_color"
         android:textColor="@color/image_button_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.099"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/add_warranty" />
 
@@ -57,68 +58,71 @@
         android:textColor="@android:color/black"
         android:textSize="10sp"
         app:layout_constraintBottom_toTopOf="@+id/button_add_image"
-        app:layout_constraintEnd_toStartOf="@+id/add_warranty"
-        app:layout_constraintStart_toStartOf="@+id/add_warranty"
+        app:layout_constraintStart_toStartOf="@+id/button_add_image"
         tools:ignore="SmallSp" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/product_name"
-        android:layout_width="184dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="21dp"
-        android:layout_marginTop="123dp"
-        android:layout_marginBottom="12dp"
-        app:layout_constraintBottom_toTopOf="@+id/product_price"
+        android:layout_width="180dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="18dp"
+        android:hint="@string/add_activity_hint_product_name"
+        app:hintAnimationEnabled="true"
         app:layout_constraintStart_toEndOf="@+id/button_add_image"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints">
+        app:layout_constraintTop_toBottomOf="@+id/add_warranty">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="39dp"
+            android:layout_height="wrap_content"
             android:background="@color/secondary_color"
-            android:hint="@string/add_activity_hint_product_name" />
+            android:gravity="center_vertical" />
+
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/product_price"
-        android:layout_width="184dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="21dp"
-        android:layout_marginBottom="12dp"
-        app:layout_constraintBottom_toTopOf="@+id/product_shop"
+        android:layout_width="180dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"
+        android:hint="@string/add_activity_hint_price"
+        app:hintAnimationEnabled="true"
         app:layout_constraintStart_toEndOf="@+id/button_add_image"
-        app:layout_constraintTop_toBottomOf="@+id/product_name"
-        tools:ignore="MissingConstraints">
+        app:layout_constraintTop_toBottomOf="@+id/product_name">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="39dp"
+            android:layout_height="wrap_content"
             android:background="@color/secondary_color"
-            android:hint="@string/add_activity_hint_price" />
+            android:gravity="center_vertical"
+            android:inputType="numberDecimal" />
+
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/product_shop"
-        android:layout_width="184dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="21dp"
-        android:layout_marginBottom="290dp"
-        app:layout_constraintBottom_toTopOf="@+id/warranty_button"
+        android:layout_width="180dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"
+        android:hint="@string/add_activity_hint_shop"
+        app:hintAnimationEnabled="true"
         app:layout_constraintStart_toEndOf="@+id/button_add_image"
-        app:layout_constraintTop_toBottomOf="@+id/product_price"
-        tools:ignore="MissingConstraints">
+        app:layout_constraintTop_toBottomOf="@+id/product_price">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="39dp"
+            android:layout_height="wrap_content"
             android:background="@color/secondary_color"
-            android:hint="@string/add_activity_hint_shop" />
+            android:gravity="center_vertical"
+            android:inputType="text" />
+
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/product_summary"
-        android:layout_width="0dp"
+        android:layout_width="362dp"
         android:layout_height="148dp"
         android:layout_marginStart="19dp"
         android:layout_marginTop="15dp"
@@ -126,6 +130,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_add_image"
+        tools:layout_editor_absoluteX="30dp"
         tools:ignore="MissingConstraints">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -137,105 +142,105 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/product_date_of_purchase"
-        android:layout_width="0dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="30dp"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="20dp"
-        app:layout_constraintEnd_toStartOf="@+id/boolean_notification"
+        android:layout_marginStart="25dp"
+        android:hint="@string/add_activity_hint_date_of_purchase"
+        app:hintAnimationEnabled="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/product_summary"
-        tools:ignore="MissingConstraints">
+        app:layout_constraintRight_toLeftOf="@+id/product_max_guarantee_date"
+        app:startIconContentDescription="@string/add_activity_hint_date_of_purchase"
+        app:endIconDrawable="@drawable/calendar_comp"
+        app:endIconMode="custom">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/product_date_of_purchase_edit_text"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/secondary_color"
-            android:drawableEnd="@drawable/calendar_comp"
-            android:hint="@string/add_activity_hint_date_of_purchase" />
+            android:gravity="center_vertical"
+            android:inputType="none" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/product_max_guarantee_date"
-        android:layout_width="0dp"
-        android:layout_height="37dp"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
+        android:layout_marginEnd="22dp"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="21dp"
+        app:endIconDrawable="@drawable/calendar_comp"
+        app:endIconMode="custom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/product_date_of_purchase"
-        app:layout_constraintTop_toBottomOf="@+id/product_summary"
-        tools:ignore="MissingConstraints">
+        app:layout_constraintTop_toBottomOf="@+id/product_summary">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/product_max_guarantee_date_edit_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/secondary_color"
-            android:drawableEnd="@drawable/calendar_comp"
             android:hint="@string/add_activity_hint_max_guarantee_date" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/slider_notification"
-        android:layout_width="0dp"
+        android:layout_width="71dp"
         android:layout_height="12dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="119dp"
         android:gravity="top"
         android:text="@string/add_activity_hint_notification"
         android:textColor="@android:color/black"
         android:textSize="10sp"
         app:layout_constraintBottom_toTopOf="@+id/notification_time"
-        app:layout_constraintEnd_toStartOf="@+id/boolean_notification"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/notification_time"
         tools:ignore="SmallSp" />
 
     <Spinner
         android:id="@+id/notification_time"
-        android:layout_width="0dp"
+        android:layout_width="170dp"
         android:layout_height="37dp"
-        android:layout_marginStart="30dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="20dp"
-        app:layout_constraintEnd_toStartOf="@+id/notification_boolean"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/product_date_of_purchase" />
 
     <TextView
         android:id="@+id/boolean_notification"
-        android:layout_width="0dp"
+        android:layout_width="103dp"
         android:layout_height="12dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginEnd="88dp"
         android:gravity="top"
         android:text="@string/add_activity_hint_receive_notification"
         android:textColor="@android:color/black"
         android:textSize="10sp"
         app:layout_constraintBottom_toTopOf="@+id/notification_boolean"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/slider_notification"
+        app:layout_constraintStart_toStartOf="@+id/notification_boolean"
         tools:ignore="SmallSp" />
+
 
     <Switch
         android:id="@+id/notification_boolean"
-        android:layout_width="0dp"
+        android:layout_width="49dp"
         android:layout_height="35dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="142dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.027"
         app:layout_constraintStart_toEndOf="@+id/notification_time"
         app:layout_constraintTop_toBottomOf="@+id/product_max_guarantee_date"
+        android:trackTint="@color/primary_color"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <TextView
         android:id="@+id/warranty_image"
-        android:layout_width="0dp"
+        android:layout_width="71dp"
         android:layout_height="12dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
@@ -245,23 +250,21 @@
         android:textSize="10sp"
 
         app:layout_constraintBottom_toTopOf="@+id/warranty_button"
-        app:layout_constraintEnd_toEndOf="@+id/slider_notification"
         app:layout_constraintStart_toStartOf="@+id/warranty_button"
         tools:ignore="SmallSp" />
 
     <Button
         android:id="@+id/warranty_button"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="19dp"
+        android:layout_width="360dp"
+        android:layout_height="159dp"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="19dp"
-        android:layout_marginBottom="9dp"
         android:backgroundTint="@color/image_button_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.489"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/product_shop" />
+        app:layout_constraintTop_toBottomOf="@+id/notification_time"
+        app:layout_constraintVertical_bias="0.0" />
 
     <RelativeLayout
         android:id="@+id/add_comp_add_screen"
@@ -269,12 +272,15 @@
         android:layout_height="55dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/valid_comp"
-        android:elevation="10dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/add_comp"
         android:gravity="bottom|end"
+        android:clickable="true"
+        android:focusable="true"
+        android:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
