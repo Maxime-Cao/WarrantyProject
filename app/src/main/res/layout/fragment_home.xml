@@ -11,7 +11,7 @@
         android:id="@+id/saved_warranty"
         android:layout_width="230dp"
         android:layout_height="45dp"
-        android:layout_marginStart="28dp"
+        android:layout_marginStart="36dp"
         android:layout_marginTop="10dp"
         android:gravity="top"
         android:text="@string/main_activity_title"
@@ -21,29 +21,29 @@
         tools:ignore="MissingConstraints" />
 
     <RelativeLayout
-        android:id="@+id/search_comp"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="17dp"
-        android:background="@drawable/search_comp"
-        android:gravity="top"
-        app:layout_constraintEnd_toStartOf="@+id/preference_comp"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <RelativeLayout
         android:id="@+id/preference_comp"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="45dp"
+        android:layout_marginEnd="36dp"
         android:background="@drawable/preference_comp"
         android:gravity="top"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RelativeLayout
+        android:id="@+id/search_comp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/search_comp"
+        android:gravity="top"
+        app:layout_constraintEnd_toStartOf="@+id/preference_comp"
         app:layout_constraintTop_toTopOf="parent" />
 
     <RelativeLayout
@@ -60,5 +60,17 @@
         android:gravity="bottom|end"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="335dp"
+        android:layout_height="670dp"
+        app:layoutManager="LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/saved_warranty"
+        tools:listitem="@layout/card" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

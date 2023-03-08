@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-
     <item>
         <vector
             android:width="55dp"
@@ -23,19 +22,19 @@
     </item>
 
     <item
-        android:bottom="12dp"
-        android:right="12dp"
-        android:left="12dp"
-        android:top="12dp">
+        android:bottom="13dp"
+        android:right="13dp"
+        android:left="13dp"
+        android:top="13dp">
         <vector
-            android:width="24dp"
-            android:height="24dp"
-            android:viewportWidth="960"
-            android:viewportHeight="960">
+            android:width="28dp"
+            android:height="28dp"
+            android:viewportWidth="24"
+            android:viewportHeight="24">
 
             <path
                 android:fillColor="@android:color/black"
-                android:pathData="M450,760L450,510L200,510L200,450L450,450L450,200L510,200L510,450L760,450L760,510L510,510L510,760L450,760Z"/>
+                android:pathData="M11,19H13V13H19V11H13V5H11V11H5V13H11V19Z"/>
         </vector>
     </item>
 

@@ -1,40 +1,40 @@
-<?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-<item>
-    <vector
-        android:width="55dp"
-        android:height="55dp"
-        android:viewportWidth="55"
-        android:viewportHeight="55">
+    <item>
+        <vector
+            android:width="55dp"
+            android:height="55dp"
+            android:viewportWidth="55"
+            android:viewportHeight="55">
 
-        <group>
+            <group>
 
-            <clip-path
-                android:pathData="M15 0H40C48.2843 0 55 6.71573 55 15V40C55 48.2843 48.2843 55 40 55H15C6.71573 55 0 48.2843 0 40V15C0 6.71573 6.71573 0 15 0Z"/>
+                <clip-path
+                    android:pathData="M15 0H40C48.2843 0 55 6.71573 55 15V40C55 48.2843 48.2843 55 40 55H15C6.71573 55 0 48.2843 0 40V15C0 6.71573 6.71573 0 15 0Z"/>
 
+                <path
+                    android:pathData="M0 0V55H55V0"
+                    android:fillColor="#E9E8CB"/>
+
+            </group>
+
+        </vector>
+    </item>
+
+    <item
+        android:bottom="13dp"
+        android:right="13dp"
+        android:left="13dp"
+        android:top="13dp">
+        <vector
+            android:width="28dp"
+            android:height="28dp"
+            android:viewportWidth="960"
+            android:viewportHeight="960">
             <path
-                android:pathData="M0 0V55H55V0"
-                android:fillColor="#E9E8CB"/>
-
-        </group>
-
-    </vector>
-</item>
-<item
-    android:bottom="12dp"
-    android:right="12dp"
-    android:left="12dp"
-    android:top="12dp">
-    <vector xmlns:android="http://schemas.android.com/apk/res/android"
-        android:width="24dp"
-        android:height="24dp"
-        android:viewportWidth="960"
-        android:viewportHeight="960">
-        <path
-            android:fillColor="@android:color/black"
-            android:pathData="M378,714L154,490L197,447L378,628L762,244L805,287L378,714Z"/>
-    </vector>
-</item>
+                android:fillColor="@android:color/black"
+                android:pathData="M378,714L154,490L197,447L378,628L762,244L805,287L378,714Z"/>
+        </vector>
+    </item>
 
 </layer-list>

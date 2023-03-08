@@ -274,7 +274,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="30dp"
-        android:background="@drawable/add_comp"
+        android:background="@drawable/valid_comp"
         android:gravity="bottom|end"
         android:clickable="true"
         android:focusable="true"
