@@ -52,21 +52,6 @@ class HomeFragment : Fragment() {
             )
         )
     )
-    /*private val myObjectList = listOf(
-        WarrantyCover(
-            1,
-        "not",
-        "Samsung",
-        "A phone cost 1001$",
-        "Médiamarkt"
-    ), WarrantyCover(
-            2,
-        "not",
-        "iPhone",
-        "A phone cost 1111$",
-        "Apple Store"
-    ) )*/
-
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
