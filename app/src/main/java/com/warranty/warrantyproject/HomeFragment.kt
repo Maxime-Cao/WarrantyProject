@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.warranty.warrantyproject.databinding.FragmentHomeBinding
 import com.warranty.warrantyproject.domains.Notification
@@ -13,10 +14,16 @@ import com.warranty.warrantyproject.domains.NotificationPeriod
 import com.warranty.warrantyproject.domains.Warranty
 import com.warranty.warrantyproject.domains.WarrantyCover
 import java.sql.Date
+import com.warranty.warrantyproject.db.WarrantyDatabase
+import com.warranty.warrantyproject.presenters.HomePresenter
+import com.warranty.warrantyproject.presenters.views.CanCreateHomeView
+import com.warranty.warrantyproject.viewmodel.WarrantyViewModel
+import com.warranty.warrantyproject.viewmodel.WarrantyViewModelFactory
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(),CanCreateHomeView {
 
     private lateinit var binding : FragmentHomeBinding
+    private lateinit var presenter: HomePresenter
 
     private val myObjectList = listOf(
         Warranty(
@@ -59,10 +66,15 @@ class HomeFragment : Fragment() {
     ): View? {
         binding = FragmentHomeBinding.inflate(inflater,container,false)
 
+        val viewModel = ViewModelProvider(requireActivity(), WarrantyViewModelFactory(WarrantyDatabase.getDatabase(requireContext()).warrantyDao()))[WarrantyViewModel::class.java]
+
+        presenter = HomePresenter(this,viewModel)
+
         binding.addCompHomeScreen.setOnClickListener {
             it.findNavController().navigate(R.id.action_homeFragment_to_addFragment)
         }
         binding.recyclerView.adapter = MyAdapter(myObjectList.map{ it.warrantyCover })
+
         return binding.root
     }
 }
