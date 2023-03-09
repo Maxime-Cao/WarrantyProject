@@ -10,20 +10,31 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.warranty.warrantyproject.databinding.FragmentLookBinding
+import com.warranty.warrantyproject.db.WarrantyDatabase
+import com.warranty.warrantyproject.presenters.LookPresenter
+import com.warranty.warrantyproject.presenters.views.CanCreateLookView
+import com.warranty.warrantyproject.viewmodel.WarrantyViewModel
+import com.warranty.warrantyproject.viewmodel.WarrantyViewModelFactory
 import java.util.*
 
-class LookFragment : Fragment() {
+class LookFragment : Fragment(),CanCreateLookView {
     private lateinit var binding : FragmentLookBinding
+    private lateinit var presenter : LookPresenter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentLookBinding.inflate(inflater,container,false)
+
+        val viewModel = ViewModelProvider(requireActivity(), WarrantyViewModelFactory(WarrantyDatabase.getDatabase(requireContext()).warrantyDao()))[WarrantyViewModel::class.java]
+
+        presenter = LookPresenter(this,viewModel)
 
         binding.returnCompLookScreen.setOnClickListener {
             goBackMenu(it)
