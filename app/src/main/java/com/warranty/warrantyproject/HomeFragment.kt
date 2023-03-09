@@ -27,7 +27,7 @@ class HomeFragment : Fragment(),CanCreateHomeView {
 
     private val myObjectList = listOf(
         Warranty(
-            1001,
+            1001.01,
             Date(2002,3,30),
             Date(2003, 10, 30),
             "not",
@@ -43,7 +43,7 @@ class HomeFragment : Fragment(),CanCreateHomeView {
             )
         ),
         Warranty(
-            1111,
+            1111.01,
             Date(2005,3,30),
             Date(2007, 10, 30),
             "not",
