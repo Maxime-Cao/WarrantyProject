@@ -34,13 +34,11 @@ android {
     }
     buildFeatures {
         viewBinding true
-        dataBinding true
     }
-    //buildFeatures.dataBinding = true
 }
 
 dependencies {
-    def lifecycle_version = '2.6.0'
+    def lifecycle_version = "2.5.1"
 
     // ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"

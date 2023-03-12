@@ -1,4 +1,4 @@
-package com.warranty.warrantyproject.db
+package com.warranty.warrantyproject.infrastructures.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
@@ -11,8 +11,8 @@ interface WarrantyDao {
     @Query("SELECT * FROM warranty_data_table")
     fun getWarranties(): LiveData<List<WarrantyEntity>>
 
-    @Insert
-    suspend fun insertWarranty(warrantyEntity: WarrantyEntity)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertWarranty(warrantyEntity: WarrantyEntity) : Long
 
     @Update
     suspend fun updateWarranty(warrantyEntity: WarrantyEntity)

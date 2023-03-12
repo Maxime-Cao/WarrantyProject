@@ -15,11 +15,11 @@ import androidx.navigation.findNavController
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.warranty.warrantyproject.databinding.FragmentLookBinding
-import com.warranty.warrantyproject.db.WarrantyDatabase
+import com.warranty.warrantyproject.infrastructures.db.WarrantyDatabase
 import com.warranty.warrantyproject.presenters.LookPresenter
 import com.warranty.warrantyproject.presenters.views.CanCreateLookView
-import com.warranty.warrantyproject.viewmodel.WarrantyViewModel
-import com.warranty.warrantyproject.viewmodel.WarrantyViewModelFactory
+import com.warranty.warrantyproject.presenters.viewmodel.WarrantyViewModel
+import com.warranty.warrantyproject.presenters.viewmodel.WarrantyViewModelFactory
 import java.util.*
 
 class LookFragment : Fragment(),CanCreateLookView {
@@ -32,7 +32,9 @@ class LookFragment : Fragment(),CanCreateLookView {
     ): View? {
         binding = FragmentLookBinding.inflate(inflater,container,false)
 
-        val viewModel = ViewModelProvider(requireActivity(), WarrantyViewModelFactory(WarrantyDatabase.getDatabase(requireContext()).warrantyDao()))[WarrantyViewModel::class.java]
+        val viewModel = ViewModelProvider(requireActivity(), WarrantyViewModelFactory(
+            WarrantyDatabase.getDatabase(requireContext()).warrantyDao())
+        )[WarrantyViewModel::class.java]
 
         presenter = LookPresenter(this,viewModel)
 

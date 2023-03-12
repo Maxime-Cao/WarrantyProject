@@ -1,8 +1,8 @@
-package com.warranty.warrantyproject.viewmodel
+package com.warranty.warrantyproject.presenters.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.warranty.warrantyproject.db.WarrantyDao
+import com.warranty.warrantyproject.infrastructures.db.WarrantyDao
 
 class WarrantyViewModelFactory (private val warrantyDao: WarrantyDao):ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

@@ -1,7 +1,8 @@
 package com.warranty.warrantyproject.presenters
 
+import android.util.Log
 import com.warranty.warrantyproject.presenters.views.CanCreateLookView
-import com.warranty.warrantyproject.viewmodel.WarrantyViewModel
+import com.warranty.warrantyproject.presenters.viewmodel.WarrantyViewModel
 
 class LookPresenter {
     private lateinit var view : CanCreateLookView
