@@ -7,6 +7,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import com.warranty.warrantyproject.domains.Notification
+import com.warranty.warrantyproject.domains.NotificationPeriod
 import java.util.*
 
 // Attention à l'endroit où doit se trouver cette classe (elle dépend de la vue => context)
@@ -43,6 +45,23 @@ class NotificationScheduler(private val context: Context?) {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP,dayInMilliseconds,pendingIntent)
         }
 
+    }
+
+    fun checkIfNotificationExists(id: Long): Boolean {
+        val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val notificationIntent = Intent(context,NotificationReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(context,id.toInt(),notificationIntent,PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_NO_CREATE)
+        return pendingIntent != null
+    }
+
+    fun updateNotification(id: Long, message: String, time: Long) {
+        val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val notificationIntent = Intent(context,NotificationReceiver::class.java)
+        notificationIntent.putExtra("title",TITLE_NOTIFICATION)
+        notificationIntent.putExtra("message",message)
+
+        val pendingIntent = PendingIntent.getBroadcast(context,id.toInt(),notificationIntent,PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP,time,pendingIntent)
     }
 
 }

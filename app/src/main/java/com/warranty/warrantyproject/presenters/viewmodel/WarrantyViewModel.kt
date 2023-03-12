@@ -1,5 +1,6 @@
 package com.warranty.warrantyproject.presenters.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.warranty.warrantyproject.domains.Warranty
@@ -20,6 +21,7 @@ class WarrantyViewModel(private val warrantyDao: WarrantyDao): ViewModel() {
     }
 
     fun updateWarranty(warrantyEntity: WarrantyEntity) = viewModelScope.launch {
+        Log.d("WarrantyViewModel", "updateWarranty: ${warrantyEntity.id}")
         warrantyDao.updateWarranty(warrantyEntity)
     }
 

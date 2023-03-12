@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.google.android.material.textfield.TextInputEditText
@@ -49,6 +50,10 @@ class LookFragment : Fragment(),CanCreateLookView {
 
         binding.deleteCompLookScreen.setOnClickListener {
             goBackMenu(it)
+        }
+
+        binding.productMaxGuaranteeDateEditText.addTextChangedListener {
+            updateSpinner()
         }
 
         val dateOfPurchaseInputLayout = binding.productDateOfPurchase
@@ -91,7 +96,7 @@ class LookFragment : Fragment(),CanCreateLookView {
         val imageCoverLink = "link"
 
         val notificationBoolean = binding.notificationBoolean.isChecked
-        var notificationTime = binding.notificationTime.selectedItem?.toString()
+        val notificationTime = binding.notificationTime.selectedItem?.toString()
 
         if(validateFields(titleField,priceField,dateOfPurchaseField,dateOfExpiryField,imageProofLink,notificationBoolean)) {
             val dateOfPurchaseText = dateOfPurchaseField.text.toString()
@@ -101,6 +106,7 @@ class LookFragment : Fragment(),CanCreateLookView {
 
             dateFormat.parse(dateOfExpiryText)?.let {
                 presenter.saveWarranty(
+                    presenter.getWarranty(requireActivity()).id,
                     titleField.text.toString().trim(),
                     summaryText,
                     shopNameText,
@@ -143,6 +149,14 @@ class LookFragment : Fragment(),CanCreateLookView {
             }
         }
         textInputLayout.isHintEnabled = false
+    }
+    private fun updateSpinner() {
+        val endOfWarrantyDate = binding.productMaxGuaranteeDateEditText.text.toString().trim()
+
+        if(endOfWarrantyDate.isNotEmpty()) {
+            presenter.getNotificationPeriods(endOfWarrantyDate)
+        }
+
     }
     private fun removeErrors() {
         binding.productNameEditText.error = null
