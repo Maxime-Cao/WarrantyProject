@@ -1,5 +1,6 @@
 package com.warranty.warrantyproject.presenters
 
+import android.util.Log
 import com.warranty.warrantyproject.NotificationScheduler
 import com.warranty.warrantyproject.infrastructures.db.WarrantyEntity
 import com.warranty.warrantyproject.domains.NotificationPeriodSelector
@@ -45,8 +46,8 @@ class AddPresenter {
                 calendar.time = dateOfExpiry
                 calendar.add(Calendar.DAY_OF_MONTH,-(periodChoice))
                 calendar.set(Calendar.HOUR_OF_DAY, 11)
-               notificationScheduler.scheduleNotification(generatedId.toInt(),"Your $title product warranty expires on: $formattedExpiryDate",calendar.timeInMillis)
-               // Uniquement pour tester la notif :  notificationScheduler.scheduleNotification(generatedId.toInt(),"Your $title product warranty expires on $formattedExpiryDate",dateEnMillisecondesQueTuVeux)
+                notificationScheduler.scheduleNotification(generatedId.toInt(),"Your $title product warranty expires on: $formattedExpiryDate",calendar.timeInMillis)
+                // Uniquement pour tester la notif :  notificationScheduler.scheduleNotification(generatedId.toInt(),"Your $title product warranty expires on $formattedExpiryDate",dateEnMillisecondesQueTuVeux)
             }
         }
     }

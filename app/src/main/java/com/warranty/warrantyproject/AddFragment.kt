@@ -50,9 +50,9 @@ class AddFragment : Fragment(),CanCreateAddView {
         }
 
 
-       binding.productMaxGuaranteeDateEditText.addTextChangedListener {
-           updateSpinner()
-       }
+        binding.productMaxGuaranteeDateEditText.addTextChangedListener {
+            updateSpinner()
+        }
 
         val dateOfPurchaseInputLayout = binding.productDateOfPurchase
         val dateOfPurchaseEditText = binding.productDateOfPurchaseEditText
@@ -185,7 +185,7 @@ class AddFragment : Fragment(),CanCreateAddView {
     }
 
     private fun validateImageProofLink(imageProofLink: String): Boolean {
-       // A modifier
+        // A modifier
         return imageProofLink.isNotEmpty()
     }
 

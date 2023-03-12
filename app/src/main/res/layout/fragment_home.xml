@@ -11,7 +11,7 @@
         android:id="@+id/saved_warranty"
         android:layout_width="230dp"
         android:layout_height="45dp"
-        android:layout_marginStart="28dp"
+        android:layout_marginStart="36dp"
         android:layout_marginTop="10dp"
         android:gravity="top"
         android:text="@string/main_activity_title"
@@ -40,7 +40,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="45dp"
+        android:layout_marginEnd="36dp"
         android:background="@drawable/preference_comp"
         android:gravity="top"
         app:layout_constraintEnd_toEndOf="parent"
@@ -63,12 +63,15 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/warrantiesView"
-        android:layout_width="409dp"
-        android:layout_height="589dp"
+        android:layout_width="333dp"
+        android:layout_height="625dp"
         android:layout_marginTop="16dp"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/saved_warranty"
-        tools:layout_editor_absoluteX="1dp"
+        app:layout_constraintVertical_bias="0.166"
         tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

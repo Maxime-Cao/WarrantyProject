@@ -1,21 +1,21 @@
 package com.warranty.warrantyproject
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.warranty.warrantyproject.databinding.FragmentHomeBinding
 import com.warranty.warrantyproject.infrastructures.db.WarrantyDatabase
 import com.warranty.warrantyproject.presenters.HomePresenter
-import com.warranty.warrantyproject.presenters.views.CanCreateHomeView
 import com.warranty.warrantyproject.presenters.viewmodel.WarrantyViewModel
 import com.warranty.warrantyproject.presenters.viewmodel.WarrantyViewModelFactory
+import com.warranty.warrantyproject.presenters.views.CanCreateHomeView
 
-class HomeFragment : Fragment(),CanCreateHomeView {
+class HomeFragment : Fragment(),CanCreateHomeView, OnWarrantyClickListener{
 
     private lateinit var binding : FragmentHomeBinding
     private lateinit var presenter: HomePresenter
@@ -45,13 +45,21 @@ class HomeFragment : Fragment(),CanCreateHomeView {
 
     private fun initRecyclerView() {
         val recyclerView = binding.warrantiesView
-        recyclerView.layoutManager = LinearLayoutManager(requireActivity())
-        adapter = WarrantyAdapter()
+        val layoutManager = GridLayoutManager(context, 2)
+        recyclerView.layoutManager = layoutManager
+        val listener = this
+        adapter = WarrantyAdapter(listener)
         recyclerView.adapter = adapter
         displayWarranties()
     }
 
     private fun displayWarranties() {
         presenter.getWarrantyList(requireActivity(),adapter)
+    }
+
+    override fun onItemClick(position: Int) {
+        val action = HomeFragmentDirections.actionHomeFragmentToLookFragment()
+        presenter.setCurrentWarranty(position)
+        binding.root.findNavController().navigate(action)
     }
 }

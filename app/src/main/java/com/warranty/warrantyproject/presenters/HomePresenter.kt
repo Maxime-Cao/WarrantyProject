@@ -1,6 +1,5 @@
 package com.warranty.warrantyproject.presenters
 
-import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import com.warranty.warrantyproject.WarrantyAdapter
 import com.warranty.warrantyproject.presenters.views.CanCreateHomeView
@@ -20,5 +19,9 @@ class HomePresenter {
             adapter.setList(it)
             adapter.notifyDataSetChanged()
         }
+    }
+
+    fun setCurrentWarranty(warranty: Int) {
+        viewModel.setCurrentWarranty(warranty)
     }
 }

@@ -7,9 +7,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.warranty.warrantyproject.infrastructures.db.WarrantyEntity
 
-class WarrantyAdapter() : RecyclerView.Adapter<WarrantyViewHolder>(){
+class WarrantyAdapter(private val listener: OnWarrantyClickListener) : RecyclerView.Adapter<WarrantyViewHolder>(){
 
     private val warrantyList = ArrayList<WarrantyEntity>()
+    private var mListener: OnWarrantyClickListener = listener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WarrantyViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -19,6 +20,9 @@ class WarrantyAdapter() : RecyclerView.Adapter<WarrantyViewHolder>(){
 
     override fun onBindViewHolder(holder: WarrantyViewHolder, position: Int) {
         holder.bind(warrantyList[position])
+        holder.itemView.setOnClickListener {
+            mListener.onItemClick(position)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -34,7 +38,10 @@ class WarrantyAdapter() : RecyclerView.Adapter<WarrantyViewHolder>(){
 class WarrantyViewHolder(private val view:View) : RecyclerView.ViewHolder(view) {
     fun bind(warrantyEntity: WarrantyEntity) {
         val titleWarrantyView = view.findViewById<TextView>(R.id.title_warranty_item)
-
+        val summaryWarrantyView = view.findViewById<TextView>(R.id.summary_warranty_item)
+        val shopWarrantyView = view.findViewById<TextView>(R.id.shop_warranty_item)
         titleWarrantyView.text = warrantyEntity.title
+        summaryWarrantyView.text = warrantyEntity.summary
+        shopWarrantyView.text = warrantyEntity.shopName
     }
 }
