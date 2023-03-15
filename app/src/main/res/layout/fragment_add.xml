@@ -154,7 +154,6 @@
         app:hintAnimationEnabled="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/product_summary"
-        app:layout_constraintRight_toLeftOf="@+id/product_max_guarantee_date"
         app:startIconContentDescription="@string/add_activity_hint_date_of_purchase"
         app:endIconDrawable="@drawable/calendar_comp"
         app:endIconMode="custom">

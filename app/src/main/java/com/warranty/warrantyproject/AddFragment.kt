@@ -1,15 +1,21 @@
 package com.warranty.warrantyproject
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Context
 import android.icu.util.Calendar
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.text.InputType
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Button
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.FileProvider
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -21,13 +27,83 @@ import com.warranty.warrantyproject.presenters.AddPresenter
 import com.warranty.warrantyproject.presenters.views.CanCreateAddView
 import com.warranty.warrantyproject.presenters.viewmodel.WarrantyViewModel
 import com.warranty.warrantyproject.presenters.viewmodel.WarrantyViewModelFactory
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import android.Manifest
+import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.os.Build
+import android.util.Log
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 
 class AddFragment : Fragment(),CanCreateAddView {
 
     private lateinit var binding : FragmentAddBinding
+
     private lateinit var presenter : AddPresenter
+
+    private var selectedButton : Button? = null
+
+    private var undefinedUri : Uri? = null
+
+    private var productImageUri: String = ""
+    private var warrantyProofUri : String = ""
+
+    private val warrantyProofFolder : String = "warranty_proof_images"
+    private val productImagesFolder : String = "product_images"
+
+    private val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri : Uri ? ->
+        uri?.let {
+            val inputStream = context?.contentResolver?.openInputStream(uri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            val drawable = BitmapDrawable(resources, bitmap)
+            selectedButton?.foreground = drawable
+            handleUri(uri)
+        }
+    }
+
+    private val takePicture = registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccessful ->
+        if (isSuccessful) {
+            undefinedUri?.let {
+                val inputStream = context?.contentResolver?.openInputStream(it)
+                val bitmap = BitmapFactory.decodeStream(inputStream)
+                val drawable = BitmapDrawable(resources, bitmap)
+                selectedButton?.foreground = drawable
+                handleUri(it)
+            }
+        }
+    }
+
+    private val requestReadStoragePermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+        isGranted ->
+        if(isGranted) {
+            pickImage.launch("image/*")
+        } else {
+            if(!ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                displayInfoDialog("Permission required","The following permission is required to add image to your warranty : READ_EXTERNAL_STORAGE. You have chosen to decline this permission by selecting the \"don't ask again\" option. If you want to use this feature, please allow this permission using your phone settings.")
+            }
+        }
+    }
+
+    private val requestNotificationPermission = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+        permissions ->
+        val permissionsGranted = permissions.filterValues { it }
+        val permissionsDeniedWithDontAskAgain = permissions.filterKeys { key -> !ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),key) }
+
+        if(permissions.size != permissionsGranted.size) {
+            binding.notificationBoolean.isChecked = false
+           if(permissionsDeniedWithDontAskAgain.isNotEmpty()) {
+               if(permissionsDeniedWithDontAskAgain.size == 1) {
+                   displayInfoDialog("Permission required","The following permission is required to set up a notification for your warranty: ${arrayOf(permissionsDeniedWithDontAskAgain.keys).contentToString()}. You have chosen to decline this permission by selecting the \"don't ask again\" option. If you want to use this feature, please allow this permission using your phone settings.")
+               } else {
+                   displayInfoDialog("Permissions required","The following permissions are required to set up a notification for your warranty: ${arrayOf(permissionsDeniedWithDontAskAgain.keys).contentToString()}. You have chosen to deny these permissions by selecting the \"don't ask again\" option. If you want to use this feature, please allow these permissions using your phone settings.")
+               }
+           }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,6 +117,12 @@ class AddFragment : Fragment(),CanCreateAddView {
 
         presenter = AddPresenter(this,viewModel)
 
+        binding.notificationBoolean.setOnClickListener {
+            if(binding.notificationBoolean.isChecked) {
+                requestNotificationAccess()
+            }
+        }
+
         binding.addCompAddScreen.setOnClickListener {
             saveWarranty()
         }
@@ -49,11 +131,86 @@ class AddFragment : Fragment(),CanCreateAddView {
             goBackHome()
         }
 
-
         binding.productMaxGuaranteeDateEditText.addTextChangedListener {
             updateSpinner()
         }
 
+        binding.buttonAddImage.setOnClickListener {
+            selectedButton = binding.buttonAddImage
+            displayImagePickerDialog()
+        }
+
+        binding.warrantyButton.setOnClickListener {
+            selectedButton = binding.warrantyButton
+            displayImagePickerDialog()
+        }
+
+        configureDatePicker()
+
+
+        return binding.root
+    }
+
+    private fun handleUri(uri: Uri) {
+        if(selectedButton == binding.buttonAddImage) {
+            this.productImageUri = uri.toString()
+        } else if(selectedButton == binding.warrantyButton) {
+            this.warrantyProofUri = uri.toString()
+
+        }
+    }
+
+    private fun displayImagePickerDialog() {
+        val picker = AlertDialog.Builder(requireContext())
+        val choices = arrayOf<CharSequence>("Take a picture","Open gallery","Cancel")
+        picker.setTitle("Select an option")
+        picker.setItems(choices) {dialog,choice ->
+            when (choices[choice]) {
+                "Take a picture" -> openCamera()
+                "Open gallery" -> openGallery()
+                "Cancel" -> dialog.dismiss()
+            }
+        }
+        picker.show()
+    }
+
+    private fun displayInfoDialog(title:String,message:String) {
+        var dialog = AlertDialog.Builder(requireContext())
+        dialog.setTitle(title)
+        dialog.setMessage(message)
+        dialog.setNeutralButton("Ok") {
+                dial, _ -> dial.dismiss()
+        }
+        dialog.show()
+    }
+
+    private fun openCamera() {
+        undefinedUri = createImageUri() ?: return
+        takePicture.launch(undefinedUri)
+    }
+
+    private fun openGallery() {
+        requestReadMediaAccess()
+    }
+
+    private fun createImageUri() : Uri? {
+        val storageDirectory  = when (selectedButton) {
+            binding.buttonAddImage -> File(requireContext().filesDir, productImagesFolder)
+            binding.warrantyButton -> File(requireContext().filesDir, warrantyProofFolder)
+            else -> null
+        }
+
+       if(storageDirectory != null) {
+           if(!storageDirectory.exists()) {
+               storageDirectory.mkdirs()
+           }
+           val image = File(storageDirectory, "WarrantyApp_${Calendar.getInstance().timeInMillis}.png")
+           return FileProvider.getUriForFile(requireContext(),"${context?.packageName}.provider",image)
+       }
+        return null
+    }
+
+    private fun configureDatePicker() {
         val dateOfPurchaseInputLayout = binding.productDateOfPurchase
         val dateOfPurchaseEditText = binding.productDateOfPurchaseEditText
 
@@ -63,9 +220,6 @@ class AddFragment : Fragment(),CanCreateAddView {
         val maxGuaranteeDateEditText = binding.productMaxGuaranteeDateEditText
 
         attachDatePickerToTextInput(maxGuaranteeDateInputLayout, maxGuaranteeDateEditText, requireContext())
-
-        return binding.root
-
     }
 
     override fun getCurrentContext(): Context? {
@@ -81,6 +235,48 @@ class AddFragment : Fragment(),CanCreateAddView {
 
     }
 
+    private fun requestReadMediaAccess() {
+        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            if (ContextCompat.checkSelfPermission(
+                    requireActivity(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestReadStoragePermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+            } else {
+                pickImage.launch("image/*")
+            }
+        } else {
+            pickImage.launch("image/*")
+        }
+    }
+
+    private fun requestNotificationAccess() {
+        val permissions = mutableListOf<String>()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    requireActivity(),
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                permissions.add(Manifest.permission.POST_NOTIFICATIONS)
+                }
+        }
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (ContextCompat.checkSelfPermission(
+                    requireActivity(),
+                    Manifest.permission.SCHEDULE_EXACT_ALARM
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                permissions.add(Manifest.permission.SCHEDULE_EXACT_ALARM)
+            }
+        }
+        if(permissions.isNotEmpty()) {
+            requestNotificationPermission.launch(permissions.toTypedArray())
+        }
+    }
+
     override fun setPeriods(periods: List<String>) {
         binding.notificationTime.adapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, periods)
     }
@@ -93,13 +289,11 @@ class AddFragment : Fragment(),CanCreateAddView {
 
         val shopNameText = binding.productShopText.text.toString().trim()
         val summaryText = binding.productSummaryText.text.toString().trim()
-        val imageProofLink = "link"
-        val imageCoverLink = "link"
-
         val notificationBoolean = binding.notificationBoolean.isChecked
         var notificationTime = binding.notificationTime.selectedItem?.toString()
+        Log.d("Coucou",productImageUri)
 
-        if(validateFields(titleField,priceField,dateOfPurchaseField,dateOfExpiryField,imageProofLink,notificationBoolean)) {
+        if(validateFields(titleField,priceField,dateOfPurchaseField,dateOfExpiryField,warrantyProofUri,notificationBoolean)) {
             val dateOfPurchaseText = dateOfPurchaseField.text.toString()
             val dateOfExpiryText = dateOfExpiryField.text.toString()
             val dateFormat = SimpleDateFormat("dd/MM/yyyy",Locale.getDefault())
@@ -113,8 +307,8 @@ class AddFragment : Fragment(),CanCreateAddView {
                     priceField.text.toString().toDouble(),
                     dateOfPurchaseDateFormat,
                     it,
-                    imageProofLink,
-                    imageCoverLink,
+                    warrantyProofUri,
+                    productImageUri,
                     notificationBoolean,
                     notificationTime
                 )
@@ -127,6 +321,7 @@ class AddFragment : Fragment(),CanCreateAddView {
         removeErrors()
         return validateTitle(titleField) && validatePrice(priceField) && validateDates(dateOfPurchaseField,dateOfExpiryField,notificationBoolean) && validateImageProofLink(imageProofLink)
     }
+
 
     private fun removeErrors() {
         binding.productNameText.error = null
@@ -185,7 +380,10 @@ class AddFragment : Fragment(),CanCreateAddView {
     }
 
     private fun validateImageProofLink(imageProofLink: String): Boolean {
-        // A modifier
+        if(imageProofLink.isEmpty()) {
+            binding.warrantyButton.error = "Image required"
+            return false
+        }
         return imageProofLink.isNotEmpty()
     }
 
