@@ -1,5 +1,6 @@
 package com.warranty.warrantyproject.presenters
 
+import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import com.warranty.warrantyproject.NotificationScheduler
 import com.warranty.warrantyproject.domains.Notification
@@ -83,8 +84,8 @@ class LookPresenter {
         return notificationScheduler.getNotification(id, dateOfExpiry)
     }
 
-    fun deleteWarranty(id: Long) {
-        viewModel.deleteWarranty(id)
+    fun deleteWarranty(id: Long, context: Context?) {
+        viewModel.deleteWarranty(id, context)
         notificationScheduler.cancelNotification(id.toInt())
     }
 }

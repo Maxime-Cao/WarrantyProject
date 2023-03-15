@@ -306,7 +306,7 @@ class LookFragment : Fragment(),CanCreateLookView {
         dialog.setTitle("Delete warranty")
         dialog.setMessage("Are you sure you want to delete this warranty?")
         dialog.setPositiveButton("Yes") { dial, _ ->
-            presenter.deleteWarranty(id)
+            presenter.deleteWarranty(id,context)
             dial.dismiss()
             goBackHome()
         }
