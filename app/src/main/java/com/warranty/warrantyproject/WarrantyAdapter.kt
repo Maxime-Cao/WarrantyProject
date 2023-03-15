@@ -38,6 +38,7 @@ class WarrantyAdapter(private val listener: OnWarrantyClickListener) : RecyclerV
         warrantyList.clear()
         warrantyList.addAll(warranties)
     }
+
 }
 
 class WarrantyViewHolder(private val view:View) : RecyclerView.ViewHolder(view) {

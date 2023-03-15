@@ -46,6 +46,26 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/search_material"
+        android:layout_width="343dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="-5dp"
+        android:hint="@string/search_hint"
+        app:hintAnimationEnabled="true"
+        app:layout_constraintTop_toBottomOf="@+id/saved_warranty"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/search_material_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/secondary_color"
+            android:gravity="center_vertical" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
     <RelativeLayout
         android:id="@+id/add_comp_home_screen"
         android:layout_width="55dp"
@@ -65,14 +85,13 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/warrantiesView"
         android:layout_width="333dp"
-        android:layout_height="625dp"
-        android:layout_marginTop="16dp"
+        android:layout_height="623dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/saved_warranty"
-        app:layout_constraintVertical_bias="0.166"
+        app:layout_constraintTop_toBottomOf="@+id/search_material"
+        app:layout_constraintVertical_bias="0.189"
         tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
