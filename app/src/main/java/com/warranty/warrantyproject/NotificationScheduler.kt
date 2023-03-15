@@ -7,8 +7,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import com.warranty.warrantyproject.domains.Notification
-import com.warranty.warrantyproject.domains.NotificationPeriod
 import java.util.*
 
 // Attention à l'endroit où doit se trouver cette classe (elle dépend de la vue => context)
@@ -54,7 +54,7 @@ class NotificationScheduler(private val context: Context?) {
         return pendingIntent != null
     }
 
-    fun updateNotification(id: Long, message: String, time: Long) {
+    fun updateNotification(id: Int, message: String, time: Long) {
         val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val notificationIntent = Intent(context,NotificationReceiver::class.java)
         notificationIntent.putExtra("title",TITLE_NOTIFICATION)
@@ -62,6 +62,34 @@ class NotificationScheduler(private val context: Context?) {
 
         val pendingIntent = PendingIntent.getBroadcast(context,id.toInt(),notificationIntent,PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         alarmManager.setExact(AlarmManager.RTC_WAKEUP,time,pendingIntent)
+    }
+
+    fun getNotification(id: Long, dateOfExpiry: Date): Notification? {
+        val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val notificationIntent = Intent(context,NotificationReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(context,id.toInt(),notificationIntent,PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_NO_CREATE)
+        if(pendingIntent != null) {
+            val longOfDateOfExpiry = dateOfExpiry.time
+            Log.d("NotificationScheduler","longOfDateOfExpiry : $longOfDateOfExpiry")
+            //Je veux pouvoir récupérer la date de notification de la notification avec l'id passé en paramètre
+            val longOfDateOfNotification = alarmManager.nextAlarmClock?.triggerTime
+            Log.d("NotificationScheduler","longOfDateOfNotification : $longOfDateOfNotification")
+
+            val long = longOfDateOfNotification?.minus(longOfDateOfExpiry)
+            return null
+        }else{
+            return null
+        }
+    }
+
+    fun cancelNotification(id: Int) {
+        val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val notificationIntent = Intent(context,NotificationReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(context,id,notificationIntent,PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_NO_CREATE)
+        if(pendingIntent != null) {
+            alarmManager.cancel(pendingIntent)
+        }
+
     }
 
 }

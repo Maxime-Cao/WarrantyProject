@@ -290,14 +290,22 @@ class AddFragment : Fragment(),CanCreateAddView {
         val shopNameText = binding.productShopText.text.toString().trim()
         val summaryText = binding.productSummaryText.text.toString().trim()
         val notificationBoolean = binding.notificationBoolean.isChecked
-        var notificationTime = binding.notificationTime.selectedItem?.toString()
-        Log.d("Coucou",productImageUri)
+        val notificationTime = binding.notificationTime.selectedItem?.toString()
 
-        if(validateFields(titleField,priceField,dateOfPurchaseField,dateOfExpiryField,warrantyProofUri,notificationBoolean)) {
+        if (validateFields(
+                titleField,
+                priceField,
+                dateOfPurchaseField,
+                dateOfExpiryField,
+                warrantyProofUri,
+                notificationBoolean
+            )
+        ) {
             val dateOfPurchaseText = dateOfPurchaseField.text.toString()
             val dateOfExpiryText = dateOfExpiryField.text.toString()
-            val dateFormat = SimpleDateFormat("dd/MM/yyyy",Locale.getDefault())
-            val dateOfPurchaseDateFormat = if(dateOfPurchaseText.isEmpty()) null else dateFormat.parse(dateOfPurchaseText)
+            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            val dateOfPurchaseDateFormat =
+                if (dateOfPurchaseText.isEmpty()) null else dateFormat.parse(dateOfPurchaseText)
 
             dateFormat.parse(dateOfExpiryText)?.let {
                 presenter.saveWarranty(
@@ -407,5 +415,6 @@ class AddFragment : Fragment(),CanCreateAddView {
             }
         }
         textInputLayout.isHintEnabled = false
+        //Quand je clique sur cancel ou ok, je retire la selection du champ :
     }
 }

@@ -1,9 +1,17 @@
 package com.warranty.warrantyproject
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import androidx.fragment.app.Fragment
@@ -11,23 +19,91 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Button
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.warranty.warrantyproject.databinding.FragmentLookBinding
+import com.warranty.warrantyproject.domains.NotificationPeriodSelector
 import com.warranty.warrantyproject.infrastructures.db.WarrantyDatabase
 import com.warranty.warrantyproject.presenters.LookPresenter
 import com.warranty.warrantyproject.presenters.views.CanCreateLookView
 import com.warranty.warrantyproject.presenters.viewmodel.WarrantyViewModel
 import com.warranty.warrantyproject.presenters.viewmodel.WarrantyViewModelFactory
+import java.io.File
 import java.util.*
 
 class LookFragment : Fragment(),CanCreateLookView {
     private lateinit var binding : FragmentLookBinding
     private lateinit var presenter : LookPresenter
+    private lateinit var notificationPeriodSelector : NotificationPeriodSelector
 
+    private var id : Long = 0
+    private var productImageUri: String = ""
+    private var warrantyProofUri : String = ""
+
+    private var selectedButton : Button? = null
+    private var undefinedUri : Uri? = null
+
+    private val warrantyProofFolder : String = "warranty_proof_images"
+    private val productImagesFolder : String = "product_images"
+
+
+    private val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri : Uri ? ->
+        uri?.let {
+            val inputStream = context?.contentResolver?.openInputStream(uri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            val drawable = BitmapDrawable(resources, bitmap)
+            selectedButton?.foreground = drawable
+            handleUri(uri)
+        }
+    }
+
+    private val takePicture = registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccessful ->
+        if (isSuccessful) {
+            undefinedUri?.let {
+                val inputStream = context?.contentResolver?.openInputStream(it)
+                val bitmap = BitmapFactory.decodeStream(inputStream)
+                val drawable = BitmapDrawable(resources, bitmap)
+                selectedButton?.foreground = drawable
+                handleUri(it)
+            }
+        }
+    }
+
+    private val requestReadStoragePermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            isGranted ->
+        if(isGranted) {
+            pickImage.launch("image/*")
+        } else {
+            if(!ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                displayInfoDialog("Permission required","The following permission is required to add image to your warranty : READ_EXTERNAL_STORAGE. You have chosen to decline this permission by selecting the \"don't ask again\" option. If you want to use this feature, please allow this permission using your phone settings.")
+            }
+        }
+    }
+
+    private val requestNotificationPermission = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            permissions ->
+        val permissionsGranted = permissions.filterValues { it }
+        val permissionsDeniedWithDontAskAgain = permissions.filterKeys { key -> !ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),key) }
+
+        if(permissions.size != permissionsGranted.size) {
+            binding.notificationBoolean.isChecked = false
+            if(permissionsDeniedWithDontAskAgain.isNotEmpty()) {
+                if(permissionsDeniedWithDontAskAgain.size == 1) {
+                    displayInfoDialog("Permission required","The following permission is required to set up a notification for your warranty: ${arrayOf(permissionsDeniedWithDontAskAgain.keys).contentToString()}. You have chosen to decline this permission by selecting the \"don't ask again\" option. If you want to use this feature, please allow this permission using your phone settings.")
+                } else {
+                    displayInfoDialog("Permissions required","The following permissions are required to set up a notification for your warranty: ${arrayOf(permissionsDeniedWithDontAskAgain.keys).contentToString()}. You have chosen to deny these permissions by selecting the \"don't ask again\" option. If you want to use this feature, please allow these permissions using your phone settings.")
+                }
+            }
+        }
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,6 +115,7 @@ class LookFragment : Fragment(),CanCreateLookView {
         )[WarrantyViewModel::class.java]
 
         presenter = LookPresenter(this,viewModel)
+        notificationPeriodSelector = NotificationPeriodSelector()
 
         binding.returnCompLookScreen.setOnClickListener {
             goBackMenu(it)
@@ -49,11 +126,20 @@ class LookFragment : Fragment(),CanCreateLookView {
         }
 
         binding.deleteCompLookScreen.setOnClickListener {
-            goBackMenu(it)
+            deleteWarranty()
         }
 
         binding.productMaxGuaranteeDateEditText.addTextChangedListener {
             updateSpinner()
+        }
+        binding.buttonAddImage.setOnClickListener {
+            selectedButton = binding.buttonAddImage
+            displayImagePickerDialog()
+        }
+
+        binding.warrantyButton.setOnClickListener {
+            selectedButton = binding.warrantyButton
+            displayImagePickerDialog()
         }
 
         val dateOfPurchaseInputLayout = binding.productDateOfPurchase
@@ -69,36 +155,189 @@ class LookFragment : Fragment(),CanCreateLookView {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onResume() {
         super.onResume()
-        val warranty = presenter.getWarranty(requireActivity())
-        binding.productNameEditText.setText(warranty.title)
-        binding.productPriceEditText.setText(warranty.price.toString())
-        binding.productShopEditText.setText(warranty.shopName)
-        binding.productSummaryEditText.setText(warranty.summary)
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        if(warranty.dateOfPurchase != null) {
-            binding.productDateOfPurchaseEditText.setText(dateFormat.format(warranty.dateOfPurchase))
-        }
-        if(warranty.dateOfExpiry != null) {
-            binding.productMaxGuaranteeDateEditText.setText(dateFormat.format(warranty.dateOfExpiry))
+        if (binding.productNameEditText.text.toString().trim().isEmpty()) {
+            val warranty = presenter.getWarranty(requireActivity())
+            id = warranty.id
+            binding.productNameEditText.setText(warranty.title)
+            binding.productPriceEditText.setText(warranty.price.toString())
+            binding.productShopEditText.setText(warranty.shopName)
+            binding.productSummaryEditText.setText(warranty.summary)
+            productImageUri = warranty.imageCoverLink
+            warrantyProofUri = warranty.imageProofLink
+            setImageWarrantyView(productImageUri, binding.buttonAddImage)
+            setImageWarrantyView(warrantyProofUri, binding.warrantyButton)
+
+            val calendar = Calendar.getInstance()
+            if(warranty.dateOfPurchase != null) {
+                calendar.time = warranty.dateOfPurchase
+                binding.productDateOfPurchaseEditText.setText(
+                    "${calendar.get(Calendar.DAY_OF_MONTH)}/${
+                        calendar.get(
+                            Calendar.MONTH
+                        ) + 1
+                    }/${calendar.get(Calendar.YEAR)}"
+                )
+            }
+            calendar.time = warranty.dateOfExpiry
+            binding.productMaxGuaranteeDateEditText.setText(
+                "${calendar.get(Calendar.DAY_OF_MONTH)}/${
+                    calendar.get(
+                        Calendar.MONTH
+                    ) + 1
+                }/${calendar.get(Calendar.YEAR)}"
+            )
+            calendar.time = warranty.dateOfExpiry
+            binding.productMaxGuaranteeDateEditText.setText("${calendar.get(Calendar.DAY_OF_MONTH)}/${calendar.get(Calendar.MONTH) + 1}/${calendar.get(Calendar.YEAR)}")
+
+            val notif = presenter.getNotification(id, warranty.dateOfExpiry);
         }
     }
+    private fun setImageWarrantyView(uri : String, button : Button) {
+        if (uri != ""){
+            val inputStream = context?.contentResolver?.openInputStream(Uri.parse(uri))
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            val drawable = BitmapDrawable(resources, bitmap)
+            button.foreground = drawable
+        }
+    }
+    private fun handleUri(uri: Uri) {
+        if(selectedButton == binding.buttonAddImage) {
+            this.productImageUri = uri.toString()
+        } else if(selectedButton == binding.warrantyButton) {
+            this.warrantyProofUri = uri.toString()
+
+        }
+    }
+    private fun openCamera() {
+        undefinedUri = createImageUri() ?: return
+        takePicture.launch(undefinedUri)
+    }
+
+    private fun openGallery() {
+        requestReadMediaAccess()
+    }
+    private fun createImageUri() : Uri? {
+        val storageDirectory  = when (selectedButton) {
+            binding.buttonAddImage -> File(requireContext().filesDir, productImagesFolder)
+            binding.warrantyButton -> File(requireContext().filesDir, warrantyProofFolder)
+            else -> null
+        }
+
+        if(storageDirectory != null) {
+            if(!storageDirectory.exists()) {
+                storageDirectory.mkdirs()
+            }
+            val image = File(storageDirectory, "WarrantyApp_${Calendar.getInstance().timeInMillis}.png")
+            return FileProvider.getUriForFile(requireContext(),"${context?.packageName}.provider",image)
+        }
+        return null
+    }
+
+    private fun displayImagePickerDialog() {
+        val picker = AlertDialog.Builder(requireContext())
+        val choices = arrayOf<CharSequence>("Take a picture", "Open gallery", "Cancel")
+        picker.setTitle("Select an option")
+        picker.setItems(choices) { dialog, choice ->
+            when (choices[choice]) {
+                "Take a picture" -> openCamera()
+                "Open gallery" -> openGallery()
+                "Cancel" -> dialog.dismiss()
+            }
+        }
+        picker.show()
+    }
+
+    private fun configureDatePicker() {
+        val dateOfPurchaseInputLayout = binding.productDateOfPurchase
+        val dateOfPurchaseEditText = binding.productDateOfPurchaseEditText
+
+        attachDatePickerToTextInput(dateOfPurchaseInputLayout, dateOfPurchaseEditText, requireContext())
+
+        val maxGuaranteeDateInputLayout = binding.productMaxGuaranteeDate
+        val maxGuaranteeDateEditText = binding.productMaxGuaranteeDateEditText
+
+        attachDatePickerToTextInput(maxGuaranteeDateInputLayout, maxGuaranteeDateEditText, requireContext())
+    }
+    private fun requestReadMediaAccess() {
+        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            if (ContextCompat.checkSelfPermission(
+                    requireActivity(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestReadStoragePermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+            } else {
+                pickImage.launch("image/*")
+            }
+        } else {
+            pickImage.launch("image/*")
+        }
+    }
+    private fun requestNotificationAccess() {
+        val permissions = mutableListOf<String>()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    requireActivity(),
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                permissions.add(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (ContextCompat.checkSelfPermission(
+                    requireActivity(),
+                    Manifest.permission.SCHEDULE_EXACT_ALARM
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                permissions.add(Manifest.permission.SCHEDULE_EXACT_ALARM)
+            }
+        }
+        if(permissions.isNotEmpty()) {
+            requestNotificationPermission.launch(permissions.toTypedArray())
+        }
+    }
+    private fun deleteWarranty() {
+        val dialog = AlertDialog.Builder(requireContext())
+        dialog.setTitle("Delete warranty")
+        dialog.setMessage("Are you sure you want to delete this warranty?")
+        dialog.setPositiveButton("Yes") { dial, _ ->
+            presenter.deleteWarranty(id)
+            dial.dismiss()
+            goBackHome()
+        }
+        dialog.setNegativeButton("No") { dial, _ ->
+            dial.dismiss()
+        }
+        dialog.show()
+    }
+    private fun displayInfoDialog(title:String,message:String) {
+        val dialog = AlertDialog.Builder(requireContext())
+        dialog.setTitle(title)
+        dialog.setMessage(message)
+        dialog.setNeutralButton("Ok") {
+                dial, _ -> dial.dismiss()
+        }
+        dialog.show()
+    }
+
 
     private fun saveWarranty() {
         val titleField = binding.productNameEditText
         val priceField = binding.productPriceEditText
         val dateOfPurchaseField = binding.productDateOfPurchaseEditText
         val dateOfExpiryField = binding.productMaxGuaranteeDateEditText
-        val shopNameText = binding.productShopEditText.text.toString().trim()
-        val summaryText = binding.productSummaryEditText.text.toString().trim()
-        val imageProofLink = "link"
-        val imageCoverLink = "link"
 
+        val shopNameText = binding.productShopEditText
+        val summaryText = binding.productSummaryEditText
         val notificationBoolean = binding.notificationBoolean.isChecked
         val notificationTime = binding.notificationTime.selectedItem?.toString()
 
-        if(validateFields(titleField,priceField,dateOfPurchaseField,dateOfExpiryField,imageProofLink,notificationBoolean)) {
+        if(validateFields(titleField,priceField,dateOfPurchaseField,dateOfExpiryField,warrantyProofUri,notificationBoolean)) {
             val dateOfPurchaseText = dateOfPurchaseField.text.toString()
             val dateOfExpiryText = dateOfExpiryField.text.toString()
             val dateFormat = java.text.SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -106,20 +345,20 @@ class LookFragment : Fragment(),CanCreateLookView {
 
             dateFormat.parse(dateOfExpiryText)?.let {
                 presenter.saveWarranty(
-                    presenter.getWarranty(requireActivity()).id,
+                    id,
                     titleField.text.toString().trim(),
-                    summaryText,
-                    shopNameText,
+                    summaryText.text.toString(),
+                    shopNameText.text.toString(),
                     priceField.text.toString().toDouble(),
                     dateOfPurchaseDateFormat,
                     it,
-                    imageProofLink,
-                    imageCoverLink,
+                    warrantyProofUri,
+                    productImageUri,
                     notificationBoolean,
                     notificationTime
                 )
-                goBackHome()
             }
+            goBackHome()
         }
     }
 
@@ -214,18 +453,12 @@ class LookFragment : Fragment(),CanCreateLookView {
     }
 
     private fun validateImageProofLink(imageProofLink: String): Boolean {
-        // A modifier
         return imageProofLink.isNotEmpty()
     }
     private fun goBackHome() {
         view?.findNavController()?.navigate(R.id.action_lookFragment_to_homeFragment)
     }
 
-    /*override fun setPeriods(periods: List<String>) {
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, periods)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.notificationTime.adapter = adapter
-    }*/
     override fun setPeriods(periods: List<String>) {
         binding.notificationTime.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, periods)
     }

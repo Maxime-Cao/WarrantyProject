@@ -167,7 +167,6 @@
         app:hintAnimationEnabled="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/product_summary"
-        app:layout_constraintRight_toLeftOf="@+id/product_max_guarantee_date"
         app:startIconContentDescription="@string/add_activity_hint_date_of_purchase"
         app:endIconDrawable="@drawable/calendar_comp"
         app:endIconMode="custom">
@@ -187,12 +186,11 @@
         android:layout_width="170dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginEnd="22dp"
+        android:layout_marginEnd="24dp"
         android:layout_marginTop="12dp"
         app:endIconDrawable="@drawable/calendar_comp"
         app:endIconMode="custom"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/product_date_of_purchase"
         app:layout_constraintTop_toBottomOf="@+id/product_summary">
 
         <com.google.android.material.textfield.TextInputEditText

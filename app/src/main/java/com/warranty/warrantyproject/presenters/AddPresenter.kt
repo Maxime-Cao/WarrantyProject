@@ -46,8 +46,7 @@ class AddPresenter {
                 calendar.time = dateOfExpiry
                 calendar.add(Calendar.DAY_OF_MONTH,-(periodChoice))
                 calendar.set(Calendar.HOUR_OF_DAY, 11)
-                //notificationScheduler.scheduleNotification(generatedId.toInt(),"Your $title product warranty expires on: $formattedExpiryDate",calendar.timeInMillis)
-notificationScheduler.scheduleNotification(generatedId.toInt(),"Your $title product warranty expires on $formattedExpiryDate",1678809210000)
+                notificationScheduler.scheduleNotification(generatedId.toInt(),"Your $title product warranty expires on $formattedExpiryDate",calendar.timeInMillis)
             }
         }
     }

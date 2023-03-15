@@ -21,12 +21,18 @@ class WarrantyViewModel(private val warrantyDao: WarrantyDao): ViewModel() {
     }
 
     fun updateWarranty(warrantyEntity: WarrantyEntity) = viewModelScope.launch {
-        Log.d("WarrantyViewModel", "updateWarranty: ${warrantyEntity.id}")
         warrantyDao.updateWarranty(warrantyEntity)
     }
 
     fun deleteWarranty(warrantyEntity: WarrantyEntity) = viewModelScope.launch {
         warrantyDao.deleteWarranty(warrantyEntity)
+    }
+    fun deleteWarranty(id : Long) = viewModelScope.launch {
+        warranties.value?.forEach {
+            if(it.id == id) {
+                warrantyDao.deleteWarranty(it)
+            }
+        }
     }
 
     fun setCurrentWarranty(warranty: Int) {

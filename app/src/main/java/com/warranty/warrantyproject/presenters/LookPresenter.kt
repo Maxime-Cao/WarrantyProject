@@ -1,6 +1,5 @@
 package com.warranty.warrantyproject.presenters
 
-import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import com.warranty.warrantyproject.NotificationScheduler
 import com.warranty.warrantyproject.domains.Notification
@@ -30,40 +29,25 @@ class LookPresenter {
         return viewModel.currentWarranty;
     }
 
-    fun saveWarranty(id: Long,title: String, summary: String, shopName: String, price: Double, dateOfPurchase: Date?, dateOfExpiry: Date, imageProofLink: String, imageCoverLink: String, requireNotification: Boolean, notificationChoice: String?) {
-        viewModel.updateWarranty(WarrantyEntity(id, title, summary, shopName, price, dateOfPurchase, dateOfExpiry, imageProofLink, imageCoverLink))
+    fun saveWarranty(id : Long,title: String, summary: String, shopName: String, price: Double, dateOfPurchase: Date?, dateOfExpiry: Date, imageProofLink: String, imageCoverLink: String, requireNotification: Boolean, notificationChoice: String?) {
+        val generatedIdDeferred = viewModel.updateWarranty(WarrantyEntity(id, title, summary, shopName, price, dateOfPurchase, dateOfExpiry, imageProofLink, imageCoverLink))
         if (requireNotification) {
-            updateNotification(notificationChoice,dateOfExpiry,title)
+            updateNotification(id,notificationChoice,dateOfExpiry,title)
         }
     }
-    private fun updateNotification(notificationChoice: String?, dateOfExpiry: Date, title: String) {
+    private fun updateNotification(id : Long,notificationChoice: String?, dateOfExpiry: Date, title: String) {
         GlobalScope.launch {
-            val periodChoice = notificationPeriodSelector.getNotificationPeriods(notificationChoice)
-            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            val formattedExpiryDate = dateFormat.format(dateOfExpiry)
-
-            //Est-ce que la notification existe déjà ?
-            val notificationExists = notificationScheduler.checkIfNotificationExists(viewModel.currentWarranty.id)
-            if(notificationExists) {
-                //Si oui, on l'update
-                notificationScheduler.updateNotification(viewModel.currentWarranty.id,"Your $title product warranty expires on: $dateOfExpiry",dateOfExpiry.time)
-            } else {
-                //Si non, on la crée
-                //Faire un Deferred<Long> avec : viewModel.currentWarranty.id
-                val generatedId : Deferred<Long> = GlobalScope.async {
-                    viewModel.currentWarranty.id
-                }
-                addNotification(generatedId,notificationChoice,dateOfExpiry,title)
+            if(notificationScheduler.checkIfNotificationExists(id)){
+                notificationScheduler.cancelNotification(id.toInt())
             }
+            addNotification(id,notificationChoice,dateOfExpiry,title)
         }
-
     }
 
-    private fun addNotification(generatedIdDeferred: Deferred<Long>, notificationChoice: String?, dateOfExpiry: Date, title: String) {
+    private fun addNotification(id: Long, notificationChoice: String?,dateOfExpiry: Date,title: String) {
         GlobalScope.launch {
-            val generatedId = generatedIdDeferred.await()
             val periodChoice = notificationPeriodSelector.getNotificationPeriods(notificationChoice)
-            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            val dateFormat = SimpleDateFormat("dd/MM/yyyy",Locale.getDefault())
             val formattedExpiryDate = dateFormat.format(dateOfExpiry)
 
             if(periodChoice != -1) {
@@ -71,8 +55,11 @@ class LookPresenter {
                 calendar.time = dateOfExpiry
                 calendar.add(Calendar.DAY_OF_MONTH,-(periodChoice))
                 calendar.set(Calendar.HOUR_OF_DAY, 11)
-                notificationScheduler.scheduleNotification(generatedId.toInt(),"Your $title product warranty expires on: $formattedExpiryDate",calendar.timeInMillis)
-                // Uniquement pour tester la notif :  notificationScheduler.scheduleNotification(generatedId.toInt(),"Your $title product warranty expires on $formattedExpiryDate",dateEnMillisecondesQueTuVeux)
+                notificationScheduler.scheduleNotification(
+                    id.toInt(),
+                    "Your $title product warranty expires on $formattedExpiryDate",
+                    calendar.timeInMillis
+                )
             }
         }
     }
@@ -89,5 +76,15 @@ class LookPresenter {
         }
 
         view.setPeriods(periods)
+    }
+
+    fun getNotification(id: Long, dateOfExpiry: Date) : Notification? {
+        //Récupérer la notification dans notificationScheduler
+        return notificationScheduler.getNotification(id, dateOfExpiry)
+    }
+
+    fun deleteWarranty(id: Long) {
+        viewModel.deleteWarranty(id)
+        notificationScheduler.cancelNotification(id.toInt())
     }
 }
