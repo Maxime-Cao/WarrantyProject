@@ -120,19 +120,24 @@ class HomeFragment : Fragment(),CanCreateHomeView, OnWarrantyClickListener{
                     warrantiesMatchingSearch.add(warranty)
                     break
                 }
-                val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                val dateString = "12/01/2002"
-                try {
-                    val date = dateFormat.parse(dateString)
-                    if(warranty.dateOfPurchase == date){
-                        warrantiesMatchingSearch.add(warranty)
-                        break
-                    }
-                    if (warranty.dateOfExpiry == date){
-                        warrantiesMatchingSearch.add(warranty)
-                        break
-                    }
 
+                try {
+                    //Je veux un string de ma date dd/mm/yyyy
+                    val dateOfExpiry : String = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(warranty.dateOfExpiry)
+                    if (dateOfExpiry.contains(searchText, ignoreCase = true)) {
+                        warrantiesMatchingSearch.add(warranty)
+                        break
+                    }
+                    val dateOfPurchase : String? =
+                        warranty.dateOfPurchase?.let {
+                            SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(
+                                it
+                            )
+                        }
+                    if (dateOfPurchase != null && dateOfPurchase.contains(searchText, ignoreCase = true)) {
+                        warrantiesMatchingSearch.add(warranty)
+                        break
+                    }
                 } catch (e: ParseException) {
                     // La chaîne n'est pas une date valide
                 }

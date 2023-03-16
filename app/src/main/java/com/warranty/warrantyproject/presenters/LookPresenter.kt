@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import com.warranty.warrantyproject.NotificationScheduler
-import com.warranty.warrantyproject.domains.Notification
 import com.warranty.warrantyproject.domains.NotificationPeriodSelector
 import com.warranty.warrantyproject.infrastructures.db.WarrantyEntity
 import com.warranty.warrantyproject.presenters.views.CanCreateLookView
@@ -90,7 +89,7 @@ class LookPresenter {
         view.setPeriods(periods)
     }
 
-    fun getNotification(id: Long, dateOfExpiry: Date) : Notification? {
+    fun getNotification(id: Long, dateOfExpiry: Date) {
         return notificationScheduler.getNotification(id, dateOfExpiry)
     }
 
