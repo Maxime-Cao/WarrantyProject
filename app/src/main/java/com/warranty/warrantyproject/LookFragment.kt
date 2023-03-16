@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
@@ -56,9 +57,11 @@ class LookFragment : Fragment(),CanCreateLookView {
     private val productImagesFolder : String = "product_images"
 
 
-    private val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri : Uri ? ->
+    private val pickImage = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri : Uri ? ->
         uri?.let {
             val inputStream = context?.contentResolver?.openInputStream(uri)
+            context?.contentResolver?.takePersistableUriPermission(uri,
+                Intent.FLAG_GRANT_READ_URI_PERMISSION)
             val bitmap = BitmapFactory.decodeStream(inputStream)
             val drawable = BitmapDrawable(resources, bitmap)
             selectedButton?.foreground = drawable
@@ -81,7 +84,7 @@ class LookFragment : Fragment(),CanCreateLookView {
     private val requestReadStoragePermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             isGranted ->
         if(isGranted) {
-            pickImage.launch("image/*")
+            pickImage.launch(arrayOf("image/*"))
         } else {
             if(!ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 displayInfoDialog("Permission required","The following permission is required to add image to your warranty : READ_EXTERNAL_STORAGE. You have chosen to decline this permission by selecting the \"don't ask again\" option. If you want to use this feature, please allow this permission using your phone settings.")
@@ -274,10 +277,10 @@ class LookFragment : Fragment(),CanCreateLookView {
             ) {
                 requestReadStoragePermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
             } else {
-                pickImage.launch("image/*")
+                pickImage.launch(arrayOf("image/*"))
             }
         } else {
-            pickImage.launch("image/*")
+            pickImage.launch(arrayOf("image/*"))
         }
     }
     private fun requestNotificationAccess() {
