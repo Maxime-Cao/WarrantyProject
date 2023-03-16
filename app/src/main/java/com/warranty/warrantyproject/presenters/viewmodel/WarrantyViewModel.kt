@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 // Lorsque le constructeur du viewmodel prend un argument (ou plus), c'est une bonne pratique de construire un viewmodel factory
 class WarrantyViewModel(private val warrantyDao: WarrantyDao): ViewModel() {
     lateinit var currentWarranty: WarrantyEntity
-    val warranties = warrantyDao.getWarranties()
+    var warranties = warrantyDao.getWarranties()
 
 
     fun insertWarranty(warrantyEntity: WarrantyEntity): Deferred<Long> = viewModelScope.async {
@@ -39,10 +39,16 @@ class WarrantyViewModel(private val warrantyDao: WarrantyDao): ViewModel() {
             }
         }
     }
-    private fun deleteFile(link: String, context: Context?) {
-        val uriToDelete = Uri.parse(link)
-        Log.d("URI", uriToDelete.toString())
-        context?.contentResolver?.delete(uriToDelete, null, null)
+    fun deleteFile(link: String, context: Context?) {
+        Log.d("*1deleteFile", "deleteFile: $link")
+        if (context != null) {
+            Log.d("*->deleteFile", "deleteFile: ${context.packageName}")
+        }
+        if(link.contains("com.warranty.warrantyproject")){
+            Log.d("*2deleteFile", "deleteFile: $link")
+            val uriToDelete = Uri.parse(link)
+            context?.contentResolver?.delete(uriToDelete, null, null)
+        }
     }
 
     fun setCurrentWarranty(warranty: Int) {

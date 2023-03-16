@@ -1,6 +1,7 @@
 package com.warranty.warrantyproject.presenters
 
 import android.content.Context
+import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import com.warranty.warrantyproject.NotificationScheduler
 import com.warranty.warrantyproject.domains.Notification
@@ -31,7 +32,17 @@ class LookPresenter {
     }
 
     fun saveWarranty(id : Long,title: String, summary: String, shopName: String, price: Double, dateOfPurchase: Date?, dateOfExpiry: Date, imageProofLink: String, imageCoverLink: String, requireNotification: Boolean, notificationChoice: String?) {
-        val generatedIdDeferred = viewModel.updateWarranty(WarrantyEntity(id, title, summary, shopName, price, dateOfPurchase, dateOfExpiry, imageProofLink, imageCoverLink))
+        val imageProofLinkToDelete = viewModel.currentWarranty.imageProofLink
+        val imageCoverLinkToDelete = viewModel.currentWarranty.imageCoverLink
+        viewModel.updateWarranty(WarrantyEntity(id, title, summary, shopName, price, dateOfPurchase, dateOfExpiry, imageProofLink, imageCoverLink))
+        if(imageProofLinkToDelete != imageProofLink) {
+            Log.d("1deleteFile", "deleteFile: $imageProofLinkToDelete")
+            viewModel.deleteFile(imageProofLinkToDelete,view.getCurrentContext())
+        }
+        if(imageCoverLinkToDelete != imageCoverLink) {
+            Log.d("2deleteFile", "deleteFile: $imageCoverLinkToDelete")
+            viewModel.deleteFile(imageCoverLinkToDelete,view.getCurrentContext())
+        }
         if (requireNotification) {
             updateNotification(id,notificationChoice,dateOfExpiry,title)
         }
@@ -80,7 +91,6 @@ class LookPresenter {
     }
 
     fun getNotification(id: Long, dateOfExpiry: Date) : Notification? {
-        //Récupérer la notification dans notificationScheduler
         return notificationScheduler.getNotification(id, dateOfExpiry)
     }
 
