@@ -53,13 +53,15 @@ class WarrantyViewHolder(private val view:View) : RecyclerView.ViewHolder(view) 
         shopWarrantyView.text = warrantyEntity.shopName
     }
     private fun setImageWarrantyView(view : View, uri : String) {
-        Log.d("WarrantyViewHolder: ",uri)
         if (uri != ""){
-            val inputStream = view.context?.contentResolver?.openInputStream(Uri.parse(uri))
-            val bitmap = BitmapFactory.decodeStream(inputStream)
-            val drawable = BitmapDrawable(view.resources, bitmap)
-            val imageWarrantyView = view.findViewById<ImageView>(R.id.image_warranty_item)
-            imageWarrantyView.setImageDrawable(drawable)
+            try {
+                val inputStream = view.context?.contentResolver?.openInputStream(Uri.parse(uri))
+                val bitmap = BitmapFactory.decodeStream(inputStream)
+                val drawable = BitmapDrawable(view.resources, bitmap)
+                val imageWarrantyView = view.findViewById<ImageView>(R.id.image_warranty_item)
+                imageWarrantyView.setImageDrawable(drawable)
+            }catch (_: Exception) {
+            }
         }
     }
 }

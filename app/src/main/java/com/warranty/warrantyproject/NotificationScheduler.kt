@@ -1,6 +1,7 @@
 package com.warranty.warrantyproject
 
 import android.app.AlarmManager
+import android.app.AlarmManager.AlarmClockInfo
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -29,9 +30,7 @@ class NotificationScheduler(private val context: Context?) {
     }
 
     fun scheduleNotification(notificationId:Int,message:String,dayInMilliseconds: Long) {
-
         val calendar = Calendar.getInstance()
-
         if(dayInMilliseconds > calendar.timeInMillis) {
             val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             val notificationIntent = Intent(context,NotificationReceiver::class.java)
@@ -40,10 +39,11 @@ class NotificationScheduler(private val context: Context?) {
             notificationIntent.putExtra("message",message)
 
             val pendingIntent = PendingIntent.getBroadcast(context,notificationId,notificationIntent,PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
-
             alarmManager.setExact(AlarmManager.RTC_WAKEUP,dayInMilliseconds,pendingIntent)
-        }
 
+            saveNotificationToSharedPreferences(notificationId,message,dayInMilliseconds)
+
+        }
     }
 
     fun checkIfNotificationExists(id: Long): Boolean {
@@ -54,38 +54,59 @@ class NotificationScheduler(private val context: Context?) {
     }
 
     fun updateNotification(id: Int, message: String, time: Long) {
-        val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val notificationIntent = Intent(context,NotificationReceiver::class.java)
-        notificationIntent.putExtra("title",TITLE_NOTIFICATION)
-        notificationIntent.putExtra("message",message)
-
-        val pendingIntent = PendingIntent.getBroadcast(context,id.toInt(),notificationIntent,PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP,time,pendingIntent)
+        cancelNotification(id)
+        deleteNotificationFromSharedPreferences(id)
+        scheduleNotification(id,message,time)
     }
 
-    fun getNotification(id: Long, dateOfExpiry: Date) {
-        val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val notificationIntent = Intent(context,NotificationReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(context,id.toInt(),notificationIntent,PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_NO_CREATE)
-        if(pendingIntent != null) {
-            val longOfDateOfExpiry = dateOfExpiry.time
-            Log.d("NotificationScheduler","longOfDateOfExpiry : $longOfDateOfExpiry")
-            //Je veux pouvoir récupérer la date de notification de la notification avec l'id passé en paramètre
-            val longOfDateOfNotification = alarmManager.nextAlarmClock?.triggerTime
-            Log.d("NotificationScheduler","longOfDateOfNotification : $longOfDateOfNotification")
+    fun getNotification(id: Long, dateOfExpiry: Date) : Date? {
+        val notificationSP = getNotificationFromSharedPreferences(id.toInt())
+        if(notificationSP != null) {
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = notificationSP.second!!
+            return calendar.time
+        }
+        return null
+    }
 
-            val long = longOfDateOfNotification?.minus(longOfDateOfExpiry)
+    fun cancelNotification(notificationId: Int) {
+        val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val notificationIntent = Intent(context, NotificationReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            notificationId,
+            notificationIntent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        alarmManager.cancel(pendingIntent)
+        deleteNotificationFromSharedPreferences(notificationId)
+    }
+
+    private fun saveNotificationToSharedPreferences(notificationId: Int, message: String, timestamp: Long) {
+        val sharedPreferences = context?.getSharedPreferences("my_shared_preferences", Context.MODE_PRIVATE)
+        val editor = sharedPreferences?.edit()
+        editor?.putString("notification_$notificationId", message)
+        editor?.putLong("notification_$notificationId" + "_timestamp", timestamp)
+        editor?.apply()
+    }
+
+    private fun getNotificationFromSharedPreferences(notificationId: Int): Pair<String, Long?>? {
+        val sharedPreferences = context?.getSharedPreferences("my_shared_preferences", Context.MODE_PRIVATE)
+        val message = sharedPreferences?.getString("notification_$notificationId", null)
+        val timestamp = sharedPreferences?.getLong("notification_$notificationId" + "_timestamp", -1L)
+        return if (message != null && timestamp != -1L) {
+            Pair(message, timestamp)
+        } else {
+            null
         }
     }
 
-    fun cancelNotification(id: Int) {
-        val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val notificationIntent = Intent(context,NotificationReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(context,id,notificationIntent,PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_NO_CREATE)
-        if(pendingIntent != null) {
-            alarmManager.cancel(pendingIntent)
-        }
-
+    private fun deleteNotificationFromSharedPreferences(notificationId: Int) {
+        val sharedPreferences = context?.getSharedPreferences("my_shared_preferences", Context.MODE_PRIVATE)
+        val editor = sharedPreferences?.edit()
+        editor?.remove("notification_$notificationId")
+        editor?.remove("notification_$notificationId" + "_timestamp")
+        editor?.apply()
     }
 
 }

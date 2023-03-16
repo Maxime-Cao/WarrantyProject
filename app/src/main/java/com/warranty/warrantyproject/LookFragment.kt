@@ -14,6 +14,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -189,10 +190,13 @@ class LookFragment : Fragment(),CanCreateLookView {
                     ) + 1
                 }/${calendar.get(Calendar.YEAR)}"
             )
-            calendar.time = warranty.dateOfExpiry
-            binding.productMaxGuaranteeDateEditText.setText("${calendar.get(Calendar.DAY_OF_MONTH)}/${calendar.get(Calendar.MONTH) + 1}/${calendar.get(Calendar.YEAR)}")
+            val dateOfExpiryField = calendar.time
 
             val notif = presenter.getNotification(id, warranty.dateOfExpiry);
+            binding.notificationBoolean.isChecked = notif != null
+            if(notif != null) {
+                binding.notificationTime.setSelection(notificationPeriodSelector.getSpinnerPosition(notif, dateOfExpiryField))
+            }
         }
     }
     private fun setImageWarrantyView(uri : String, button : Button) {

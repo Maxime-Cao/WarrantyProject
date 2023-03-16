@@ -22,5 +22,6 @@ class NotificationReceiver : BroadcastReceiver() {
         val notificationId = intent.getIntExtra(NOTIFICATION_ID,0)
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(notificationId,notification)
+        NotificationScheduler(context).cancelNotification(notificationId)
     }
 }

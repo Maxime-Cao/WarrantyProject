@@ -47,16 +47,13 @@ class LookPresenter {
         }
     }
     private fun updateNotification(id : Long,notificationChoice: String?, dateOfExpiry: Date, title: String) {
-        GlobalScope.launch {
             if(notificationScheduler.checkIfNotificationExists(id)){
                 notificationScheduler.cancelNotification(id.toInt())
             }
             addNotification(id,notificationChoice,dateOfExpiry,title)
-        }
     }
 
     private fun addNotification(id: Long, notificationChoice: String?,dateOfExpiry: Date,title: String) {
-        GlobalScope.launch {
             val periodChoice = notificationPeriodSelector.getNotificationPeriods(notificationChoice)
             val dateFormat = SimpleDateFormat("dd/MM/yyyy",Locale.getDefault())
             val formattedExpiryDate = dateFormat.format(dateOfExpiry)
@@ -64,7 +61,7 @@ class LookPresenter {
             if(periodChoice != -1) {
                 val calendar = Calendar.getInstance()
                 calendar.time = dateOfExpiry
-                calendar.add(Calendar.DAY_OF_MONTH,-(periodChoice))
+                calendar.add(Calendar.DAY_OF_MONTH, -(periodChoice))
                 calendar.set(Calendar.HOUR_OF_DAY, 11)
                 notificationScheduler.scheduleNotification(
                     id.toInt(),
@@ -72,7 +69,6 @@ class LookPresenter {
                     calendar.timeInMillis
                 )
             }
-        }
     }
 
     fun getNotificationPeriods(endOfWarrantyDate: String)  {
@@ -89,8 +85,8 @@ class LookPresenter {
         view.setPeriods(periods)
     }
 
-    fun getNotification(id: Long, dateOfExpiry: Date) {
-        return notificationScheduler.getNotification(id, dateOfExpiry)
+    fun getNotification(id: Long, dateOfExpiry: Date) : Date? {
+        return notificationScheduler.getNotification(id,dateOfExpiry)
     }
 
     fun deleteWarranty(id: Long, context: Context?) {
