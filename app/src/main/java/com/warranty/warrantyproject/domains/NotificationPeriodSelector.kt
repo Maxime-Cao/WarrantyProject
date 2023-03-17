@@ -38,7 +38,6 @@ class NotificationPeriodSelector {
             val notificationDate = calendar.time
 
             if(notificationDate.time == notificationPeriod.time) {
-
                 return index
             }
         }

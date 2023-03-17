@@ -1,6 +1,5 @@
 package com.warranty.warrantyproject.presenters
 
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import com.warranty.warrantyproject.WarrantyAdapter
 import com.warranty.warrantyproject.infrastructures.db.WarrantyEntity
@@ -29,6 +28,14 @@ class HomePresenter {
 
     fun getWarranties(): List<WarrantyEntity> {
         return viewModel.warranties.value!!
+    }
+
+    fun getView(): CanCreateHomeView {
+        return view
+    }
+
+    fun getViewModel() : WarrantyViewModel {
+        return viewModel
     }
 
 }
