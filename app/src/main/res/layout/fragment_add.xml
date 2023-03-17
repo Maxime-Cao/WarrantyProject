@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/fragment_add"
     android:layout_height="match_parent"
     android:background="@color/background_color"
     tools:context=".AddFragment">
@@ -45,7 +46,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.099"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_warranty" />
+        app:layout_constraintTop_toBottomOf="@+id/add_warranty"
+        android:foreground="@drawable/add_photo_comp"
+        android:foregroundGravity="center"
+        android:maxWidth="100dp"
+        android:maxHeight="100dp"/>
 
     <TextView
         android:id="@+id/product_image"
@@ -154,7 +159,6 @@
         app:hintAnimationEnabled="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/product_summary"
-        app:layout_constraintRight_toLeftOf="@+id/product_max_guarantee_date"
         app:startIconContentDescription="@string/add_activity_hint_date_of_purchase"
         app:endIconDrawable="@drawable/calendar_comp"
         app:endIconMode="custom">
@@ -253,12 +257,12 @@
         android:textColor="@android:color/black"
         android:textSize="10sp"
 
-        app:layout_constraintBottom_toTopOf="@+id/warranty_button"
-        app:layout_constraintStart_toStartOf="@+id/warranty_button"
+        app:layout_constraintBottom_toTopOf="@+id/warranty_button_add"
+        app:layout_constraintStart_toStartOf="@+id/warranty_button_add"
         tools:ignore="SmallSp" />
 
     <Button
-        android:id="@+id/warranty_button"
+        android:id="@+id/warranty_button_add"
         android:layout_width="360dp"
         android:layout_height="159dp"
         android:layout_marginTop="12dp"
@@ -268,7 +272,11 @@
         app:layout_constraintHorizontal_bias="0.489"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/notification_time"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        android:foreground="@drawable/add_photo_comp"
+        android:foregroundGravity="center"
+        android:maxWidth="100dp"
+        android:maxHeight="100dp" />
 
     <RelativeLayout
         android:id="@+id/add_comp_add_screen"

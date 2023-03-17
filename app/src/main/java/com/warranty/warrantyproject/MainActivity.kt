@@ -4,11 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Window
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
 import com.warranty.warrantyproject.databinding.ActivityMainBinding
-import com.warranty.warrantyproject.db.WarrantyDatabase
-import com.warranty.warrantyproject.viewmodel.WarrantyViewModel
-import com.warranty.warrantyproject.viewmodel.WarrantyViewModelFactory
+import com.warranty.warrantyproject.infrastructures.db.WarrantyDatabase
+import com.warranty.warrantyproject.presenters.viewmodel.WarrantyViewModel
+import com.warranty.warrantyproject.presenters.viewmodel.WarrantyViewModelFactory
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
@@ -20,6 +19,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel = ViewModelProvider(this,WarrantyViewModelFactory(WarrantyDatabase.getDatabase(application).warrantyDao()))[WarrantyViewModel::class.java]
+        viewModel = ViewModelProvider(this,
+            WarrantyViewModelFactory(WarrantyDatabase.getDatabase(application).warrantyDao())
+        )[WarrantyViewModel::class.java]
     }
 }
