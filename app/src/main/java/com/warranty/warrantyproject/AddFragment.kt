@@ -6,7 +6,6 @@ import android.content.Context
 import android.icu.util.Calendar
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.text.InputType
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -143,8 +142,8 @@ class AddFragment : Fragment(),CanCreateAddView {
             displayImagePickerDialog()
         }
 
-        binding.warrantyButton.setOnClickListener {
-            selectedButton = binding.warrantyButton
+        binding.warrantyButtonAdd.setOnClickListener {
+            selectedButton = binding.warrantyButtonAdd
             displayImagePickerDialog()
         }
 
@@ -157,7 +156,7 @@ class AddFragment : Fragment(),CanCreateAddView {
     private fun handleUri(uri: Uri) {
         if(selectedButton == binding.buttonAddImage) {
             this.productImageUri = uri.toString()
-        } else if(selectedButton == binding.warrantyButton) {
+        } else if(selectedButton == binding.warrantyButtonAdd) {
             this.warrantyProofUri = uri.toString()
 
         }
@@ -199,7 +198,7 @@ class AddFragment : Fragment(),CanCreateAddView {
     private fun createImageUri() : Uri? {
         val storageDirectory  = when (selectedButton) {
             binding.buttonAddImage -> File(requireContext().filesDir, productImagesFolder)
-            binding.warrantyButton -> File(requireContext().filesDir, warrantyProofFolder)
+            binding.warrantyButtonAdd -> File(requireContext().filesDir, warrantyProofFolder)
             else -> null
         }
 
@@ -365,10 +364,6 @@ class AddFragment : Fragment(),CanCreateAddView {
         val dateOfExpiryText = dateOfExpiryField.text.toString().trim()
         val currentDateText = dateFormat.format(Date())
 
-        if(notificationBoolean && dateOfPurchaseText.isEmpty()) {
-            dateOfPurchaseField.error = "Date required"
-            return false
-        }
 
         if(dateOfPurchaseText.isNotEmpty() ) {
             if(dateFormat.parse(dateOfPurchaseText)!!.after(dateFormat.parse(currentDateText)) || dateFormat.parse(dateOfPurchaseText)!!.after(dateFormat.parse(dateOfExpiryText))) {
@@ -392,7 +387,7 @@ class AddFragment : Fragment(),CanCreateAddView {
 
     private fun validateImageProofLink(imageProofLink: String): Boolean {
         if(imageProofLink.isEmpty()) {
-            binding.warrantyButton.error = "Image required"
+            binding.warrantyButtonAdd.error = "Image required"
             return false
         }
         return imageProofLink.isNotEmpty()

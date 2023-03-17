@@ -442,10 +442,6 @@ class LookFragment : Fragment(),CanCreateLookView {
         val dateOfExpiryText = dateOfExpiryField.text.toString().trim()
         val currentDateText = dateFormat.format(Date())
 
-        if(notificationBoolean && dateOfPurchaseText.isEmpty()) {
-            dateOfPurchaseField.error = "Date required"
-            return false
-        }
 
         if(dateOfPurchaseText.isNotEmpty() ) {
             if(dateFormat.parse(dateOfPurchaseText)!!.after(dateFormat.parse(currentDateText)) || dateFormat.parse(dateOfPurchaseText)!!.after(dateFormat.parse(dateOfExpiryText))) {

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/fragment_add"
     android:layout_height="match_parent"
     android:background="@color/background_color"
     tools:context=".AddFragment">
@@ -256,12 +257,12 @@
         android:textColor="@android:color/black"
         android:textSize="10sp"
 
-        app:layout_constraintBottom_toTopOf="@+id/warranty_button"
-        app:layout_constraintStart_toStartOf="@+id/warranty_button"
+        app:layout_constraintBottom_toTopOf="@+id/warranty_button_add"
+        app:layout_constraintStart_toStartOf="@+id/warranty_button_add"
         tools:ignore="SmallSp" />
 
     <Button
-        android:id="@+id/warranty_button"
+        android:id="@+id/warranty_button_add"
         android:layout_width="360dp"
         android:layout_height="159dp"
         android:layout_marginTop="12dp"
