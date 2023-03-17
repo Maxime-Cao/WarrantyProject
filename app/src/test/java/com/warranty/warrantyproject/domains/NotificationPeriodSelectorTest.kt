@@ -189,7 +189,7 @@ class NotificationPeriodSelectorTest {
 
     @Test
     fun getSpinnerPosition0Days() {
-        val notificationPeriod = Date(2023, 3, 18)
+        val notificationPeriod = Date(2023, 3, 18, 11, 0)
         val dateOfExpiry = Date(2023, 3, 18)
         val result = notificationPeriodSelector.getSpinnerPosition(notificationPeriod, dateOfExpiry)
         assert(result == 0)
@@ -197,17 +197,25 @@ class NotificationPeriodSelectorTest {
 
     @Test
     fun getSpinnerPosition1Days() {
-        val notificationPeriod = Date(2023, 3, 18)
+        val notificationPeriod = Date(2023, 3, 18, 11, 0)
         val dateOfExpiry = Date(2023, 3, 19)
         val result = notificationPeriodSelector.getSpinnerPosition(notificationPeriod, dateOfExpiry)
-        assert(result == 0)
+        assert(result == 1)
     }
 
     @Test
     fun getSpinnerPosition1Week() {
-        val notificationPeriod = Date(2023, 3, 18)
+        val notificationPeriod = Date(2023, 3, 18, 11, 0)
         val dateOfExpiry = Date(2023, 3, 25)
         val result = notificationPeriodSelector.getSpinnerPosition(notificationPeriod, dateOfExpiry)
         assert(result == 2)
+    }
+
+    @Test
+    fun getSpinnerPosition1Month() {
+        val notificationPeriod = Date(2023, 3, 18, 11, 0)
+        val dateOfExpiry = Date(2023, 4, 18)
+        val result = notificationPeriodSelector.getSpinnerPosition(notificationPeriod, dateOfExpiry)
+        assert(result == 4)
     }
 }
