@@ -58,7 +58,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.099"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/warranty" />
+        app:layout_constraintTop_toBottomOf="@+id/warranty"
+        android:foreground="@drawable/add_photo_comp"
+        android:foregroundGravity="center"
+        android:maxWidth="100dp"
+        android:maxHeight="100dp"/>
 
     <TextView
         android:id="@+id/product_image"
@@ -279,7 +283,11 @@
         app:layout_constraintHorizontal_bias="0.489"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/notification_time"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        android:foreground="@drawable/add_photo_comp"
+        android:foregroundGravity="center"
+        android:maxWidth="100dp"
+        android:maxHeight="100dp"/>
 
     <RelativeLayout
         android:id="@+id/validate_button"

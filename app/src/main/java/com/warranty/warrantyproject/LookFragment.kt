@@ -20,12 +20,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -146,6 +148,7 @@ class LookFragment : Fragment(),CanCreateLookView {
             displayImagePickerDialog()
         }
 
+
         val dateOfPurchaseInputLayout = binding.productDateOfPurchase
         val dateOfPurchaseEditText = binding.productDateOfPurchaseEditText
 
@@ -155,12 +158,12 @@ class LookFragment : Fragment(),CanCreateLookView {
         val maxGuaranteeDateEditText = binding.productMaxGuaranteeDateEditText
 
         attachDatePickerToTextInput(maxGuaranteeDateInputLayout, maxGuaranteeDateEditText, requireContext())
-
         return binding.root
     }
 
     @SuppressLint("SetTextI18n")
     override fun onResume() {
+        Log.d("LookFragment", "onResume: ")
         super.onResume()
         if (binding.productNameEditText.text.toString().trim().isEmpty()) {
             val warranty = presenter.getWarranty(requireActivity())
@@ -173,6 +176,7 @@ class LookFragment : Fragment(),CanCreateLookView {
             warrantyProofUri = warranty.imageProofLink
             setImageWarrantyView(productImageUri, binding.buttonAddImage)
             setImageWarrantyView(warrantyProofUri, binding.warrantyButton)
+
 
             val calendar = Calendar.getInstance()
             if(warranty.dateOfPurchase != null) {
@@ -204,10 +208,14 @@ class LookFragment : Fragment(),CanCreateLookView {
     }
     private fun setImageWarrantyView(uri : String, button : Button) {
         if (uri != ""){
-            val inputStream = context?.contentResolver?.openInputStream(Uri.parse(uri))
-            val bitmap = BitmapFactory.decodeStream(inputStream)
-            val drawable = BitmapDrawable(resources, bitmap)
-            button.foreground = drawable
+           try {
+               val inputStream = context?.contentResolver?.openInputStream(Uri.parse(uri))
+               val bitmap = BitmapFactory.decodeStream(inputStream)
+               val drawable = BitmapDrawable(resources, bitmap)
+               button.foreground = drawable
+           }catch (_ : Exception) {
+
+           }
         }
     }
     private fun handleUri(uri: Uri) {
